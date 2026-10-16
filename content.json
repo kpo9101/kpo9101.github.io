@@ -1,0 +1,795 @@
+{
+  "version": 1,
+  "meta": {
+    "title": "한광훈 포트폴리오",
+    "description": "Unreal C++ 게임 클라이언트 프로그래머 한광훈의 포트폴리오 — Festa Fiesta! 건축 플러그인·OBB/SAT 배치·패키징 안정화, LEFT BEHIND EOS 멀티플레이"
+  },
+  "profile": {
+    "name": "한광훈",
+    "role": "GAME CLIENT PROGRAMMER · UNREAL C++",
+    "navRole": "Game Client Programmer",
+    "email": "kpo9101@gmail.com",
+    "phone": "",
+    "github": "https://github.com/kpo9101",
+    "githubLabel": "github.com/kpo9101"
+  },
+  "tabsets": {
+    "festa": [
+      "OVERVIEW",
+      "ARCHITECTURE",
+      "TROUBLESHOOTING",
+      "LEARNINGS"
+    ],
+    "lb": [
+      "ARCHITECTURE",
+      "TROUBLESHOOTING",
+      "LEARNINGS"
+    ]
+  },
+  "pages": [
+    {
+      "type": "cover"
+    },
+    {
+      "type": "about",
+      "eyebrow": "ABOUT ME",
+      "title": "복잡한 시스템을 모듈로 나누고,\n테스트로 증명합니다",
+      "lead": "Festa Fiesta!에서는 시설 배치 엔진을 플러그인으로 설계해 임의 각도 회전, 묶음 편집·실행 취소, NavMesh 접근점 보정, Shipping 패키징 안정화를 맡았습니다. LEFT BEHIND에서는 EOS 세션과 서버 권한 판정으로 멀티플레이 진입과 전투 흐름을 안정화했습니다.",
+      "skills": [
+        "Unreal Engine 5",
+        "C++",
+        "Blueprint",
+        "GAS",
+        "EOS · Online Subsystem",
+        "Navigation",
+        "UMG · CommonUI",
+        "Automation Test",
+        "Python · PowerShell",
+        "Git · Git LFS"
+      ],
+      "cards": [
+        {
+          "title": "게임 수학으로 배치 판정을 설계합니다",
+          "text": "AABB 1차 필터와 OBB·SAT 정밀 판정을 나눠 임의 각도 회전 배치의 겹침 오탐을 없앴습니다. 회전값은 정수(0.01도)로 저장해 판정을 결정적으로 유지했습니다.",
+          "note": "Festa Fiesta! · 45도 회전 회귀 테스트 기준 오탐 0건"
+        },
+        {
+          "title": "상태 변경은 전부 성공하거나 전부 되돌립니다",
+          "text": "묶음 편집은 새 상태를 먼저 준비한 뒤 확정하고, 실패하면 시설과 비용 정책을 역순으로 복구합니다. 멀티플레이 판정은 서버 권한·서버 시각으로 일원화했습니다.",
+          "note": "건축 편집 테스트 174개 통과 · LEFT BEHIND 서버 타이머"
+        },
+        {
+          "title": "실제 빌드에서 돌아가는지까지 확인합니다",
+          "text": "Cook 후에만 생기는 좌표 변형과 NavMesh 왜곡을 원인부터 추적하고, 빌드 무결성 검사와 자동화 테스트로 배포본을 검증했습니다.",
+          "note": "Cook 전후 Zone 13개 좌표 오차 0 · 배포 파일 100개 해시 일치"
+        }
+      ]
+    },
+    {
+      "type": "contents",
+      "eyebrow": "CONTENTS",
+      "items": [
+        {
+          "num": "01",
+          "title": "Festa Fiesta!",
+          "anchor": "festa",
+          "meta": "축제 건설·경영 시뮬레이션 · 7인 · 2026.08 ~ 2026.10 · UE 5.7.4 / C++",
+          "topics": [
+            "건축 플러그인 아키텍처",
+            "OBB·SAT 임의 각도 회전 배치",
+            "지면 판정 오탐 수정",
+            "묶음 편집·실행 취소",
+            "군중 AI 접근점 자동 보정",
+            "Win64 Shipping 패키징 안정화",
+            "시설 조합 미리보기"
+          ],
+          "image": "img/ff_banner.jpg",
+          "alt": "Festa Fiesta! 키 아트"
+        },
+        {
+          "num": "02",
+          "title": "LEFT BEHIND",
+          "anchor": "leftbehind",
+          "meta": "EOS 협동 보스 레이드 액션 RPG · 5인 · 2026.06 ~ 2026.07 · UE 5.7.4 / C++ / GAS",
+          "topics": [
+            "레이드 시작 준비 Barrier",
+            "서버 타이머 연사 판정",
+            "역할 편향 없는 MVP 산식",
+            "오버킬·오버힐 제외 집계",
+            "EOS 세션·초대·방 관리"
+          ],
+          "image": "img/lb_title.jpg",
+          "alt": "LEFT BEHIND 타이틀 화면"
+        }
+      ]
+    },
+    {
+      "type": "intro",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "id": "festa",
+      "num": "01",
+      "title": "Festa Fiesta!",
+      "desc": "부산 다대포 해변에 축제장을 짓고 운영하는 싱글 플레이 건설·경영 시뮬레이션입니다. 시설의 위치와 운영 방식에 따라 방문객의 움직임이 달라집니다. 저는 시설이 놓이는 모든 순간 — 배치 판정, 회전, 편집, 실행 취소 — 과 그 결과가 군중 AI 경로와 패키징 빌드까지 올바르게 이어지도록 만드는 일을 맡았습니다.",
+      "links": [
+        {
+          "label": "시연 영상",
+          "url": "https://youtu.be/olpAoV4WH7Y",
+          "icon": "yt"
+        },
+        {
+          "label": "GitHub",
+          "url": "https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project",
+          "icon": "gh"
+        },
+        {
+          "label": "프로젝트 브로셔",
+          "url": "https://teamsparta.notion.site/8-13-Festa-Fiesta-3b12dc3ef514808a9247c952c9ecf639",
+          "icon": "doc"
+        }
+      ],
+      "image": "img/ff_cover.jpg",
+      "alt": "Festa Fiesta! 커버 아트",
+      "meta": [
+        {
+          "label": "기간",
+          "value": "2026.08 ~ 2026.10 (3개월)"
+        },
+        {
+          "label": "팀 구성",
+          "value": "7인 · 레벨·시설 시스템 개발 / 패키징 매니저"
+        },
+        {
+          "label": "개발 환경",
+          "value": "UE 5.7.4 · C++ · Blueprint · CommonUI · Navigation · Win64"
+        }
+      ],
+      "roles": [
+        "FF_ZoneSystem · FF_ZoneAuthoring 플러그인 설계",
+        "시설 배치·회전 기하 엔진, 묶음 편집·실행 취소",
+        "존 접근점 자동 보정, 건축 모드 UI",
+        "Win64 Shipping 패키징 안정화·자동 검증"
+      ]
+    },
+    {
+      "type": "gallery",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · OVERVIEW",
+      "title": "건축 모드 — 제가 만든 시스템이 보이는 화면",
+      "link": {
+        "label": "시연 영상",
+        "url": "https://youtu.be/olpAoV4WH7Y",
+        "icon": "yt"
+      },
+      "items": [
+        {
+          "image": "img/ff_preview.jpg",
+          "alt": "시설 배치 미리보기 화면",
+          "title": "배치 미리보기",
+          "caption": "시설 본체·대기열·관객석 범위와 필요한 공간을 설치 전에 보여 줍니다."
+        },
+        {
+          "image": "img/ff_catalog.jpg",
+          "alt": "건축 모드 시설 카탈로그",
+          "title": "시설 카탈로그",
+          "caption": "카테고리·비용·필수 시설을 한 화면에서 고르는 건축 모드 UI"
+        },
+        {
+          "image": "img/ff_facilities.jpg",
+          "alt": "시설 아트 카탈로그",
+          "title": "시설 데이터",
+          "caption": "시설마다 크기·대기열·관객석 규칙을 데이터로 정의해 같은 판정 경로로 검사"
+        },
+        {
+          "image": "img/ff_map.jpg",
+          "alt": "다대포 축제장 전경",
+          "title": "다대포 축제장",
+          "caption": "구역(Zone) 단위로 건축 가능 영역을 나눈 실제 맵"
+        }
+      ]
+    },
+    {
+      "type": "architecture",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · ARCHITECTURE",
+      "title": "확장 가능한 건축 플러그인 구조",
+      "link": {
+        "label": "플러그인 추가 커밋",
+        "url": "https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/ca961f8b",
+        "icon": "gh"
+      },
+      "lead": "",
+      "points": [
+        {
+          "title": "최종 판정은 한 곳에서",
+          "text": "건축 화면·제작 도구·미리보기 모두 UFFZSWorldSubsystem의 공통 명령 경로로 설치 가능 여부를 판단합니다."
+        },
+        {
+          "title": "추가 규칙은 인터페이스로",
+          "text": "비용·강화·구획 잠금이 IFFZSExternalPolicy의 사전검사 → 임시적용 → 확정/복구 약속에 참여해, 코어가 개별 게임 규칙을 몰라도 됩니다."
+        },
+        {
+          "title": "기존 코드를 고치지 않고 확장",
+          "text": "구역 제작 기능은 새 플러그인(FF_ZoneAuthoring)으로 얹고, 두 플러그인 모두 Runtime·Editor 모듈을 분리했습니다."
+        }
+      ],
+      "code": {
+        "file": "FFZALayerPolicy.cpp",
+        "code": "// ApplyTentativeFFZoneSystemChange_Implementation\n// 사전 검증과 실제 적용 사이에 구획이 잠길 수 있으므로 같은 판정을 한 번 더 한다.\nconst UFFZAZoneAuthoringSubsystem* Subsystem = Owner.Get();\nreturn Subsystem ? Subsystem->EvaluatePlacement(Context) : FFFZSPolicyDecision();",
+        "size": "xs"
+      },
+      "diagram": "ff_arch"
+    },
+    {
+      "type": "trouble",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · TROUBLESHOOTING 01",
+      "title": "90도 회전의 한계를 OBB·SAT 판정으로 풀었습니다",
+      "link": {
+        "label": "코드 변경 보기",
+        "url": "https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/5ed9401",
+        "icon": "gh"
+      },
+      "problem": "시설을 90도 단위로만 돌릴 수 있어 해변 곡선을 따라 비스듬히 놓을 수 없었습니다. 배치 영역을 축정렬 사각형(AABB)으로만 판정해, 45도로 돌린 시설끼리는 실제로 떨어져 있어도 겹친다고 오판했습니다.",
+      "solution": "OBB 기하 연산을 별도 모듈로 분리하고 AABB로 후보를 거른 뒤 SAT로 정밀 판정했습니다. 회전값은 정수 1/100도로 저장하고 90도 각도는 격자에 맞게 스냅했습니다. NavMesh는 DynamicModifiersOnly와 NavArea_Null modifier만 갱신해 회전 배치의 비용 범위를 제한했습니다.",
+      "result": "임의 각도(0.01도 단위) 배치를 지원하고, 기존·신규 판정 등가성 회귀 테스트와 45도 오탐 테스트에서 **오탐 0건**을 확인했습니다.",
+      "side": [
+        {
+          "type": "diagram",
+          "id": "sat"
+        },
+        {
+          "type": "code",
+          "file": "FF_FFZSOrientedGeometry.cpp",
+          "code": "double NormalizeYawDegrees(const double YawDegrees)\n{\n    double Result = FMath::Fmod(YawDegrees, 360.0);\n    if (Result < -180.0) { Result += 360.0; }\n    else if (Result >= 180.0) { Result -= 360.0; }\n    return Result;\n}",
+          "size": "sm"
+        }
+      ]
+    },
+    {
+      "type": "trouble",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · TROUBLESHOOTING 02",
+      "title": "빈 땅인데 설치가 막히던 원인을 찾아 고쳤습니다",
+      "link": {
+        "label": "코드 변경 보기",
+        "url": "https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/d3ca8507",
+        "icon": "gh"
+      },
+      "problem": "메인 공연장 후보 위치에서 빈 잔디가 장애물로 판정돼 설치가 거절됐습니다. 일반 시설은 지면 검사 결과를 충돌 검사에 넘기지 않아, 평균 바닥보다 조금 높은 땅을 장애물로 오인했습니다.",
+      "solution": "검증된 지면 정보(FFFZSPlacementGroundSupport)를 충돌 검사에 전달하고, 건물에서 떨어진 대기열·관객석은 지면을 따로 검사했습니다. 실패하면 지면 문제와 실제 장애물을 구분해 이유·위치·가까운 빈자리를 안내합니다.",
+      "result": "같은 후보 위치에서 설치 확정이 활성화됐고, 실제 나무와 겹칠 때의 차단은 유지됐습니다. 관련 자동 검사 **61개**가 경고·실패 없이 통과했습니다.",
+      "side": [
+        {
+          "type": "image",
+          "src": "img/ff_collision.jpg",
+          "alt": "설치 불가 이유를 안내하는 배치 실패 화면",
+          "caption": "",
+          "fit": "cover",
+          "height": "short"
+        },
+        {
+          "type": "code",
+          "file": "FF_FFZSWorldSubsystem.cpp",
+          "code": "if (Failure != EFFZSPlacementFailure::PlacementCollision)\n{\n    // Audience and queue regions have their own terrain. A footprint's proof\n    // must not exempt a distant slope, missing ground, or unrelated surface.\n    FFFZSPlacementValidation SurfaceValidation;\n    SurfaceValidation.PlacementTransform = InOutValidation.PlacementTransform;\n    SurfaceValidation.FootprintOrientedRects.Add(LocalRegion);\n    ValidateGround(Zone, Spec, IgnoreFacility, SurfaceValidation, &ReservationSupport);\n    // … 이하 3줄 생략\n}",
+          "size": "xs"
+        }
+      ]
+    },
+    {
+      "type": "trouble",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · TROUBLESHOOTING 03",
+      "title": "묶음 편집과 실행 취소를 비용까지 함께 되돌렸습니다",
+      "link": {
+        "label": "코드 변경 보기",
+        "url": "",
+        "icon": "gh"
+      },
+      "problem": "먹거리 거리처럼 여러 시설로 만든 구성을 하나씩 다시 옮겨야 했습니다. 묶음 중 일부만 적용되거나, 시설만 되돌리고 비용은 그대로 남는 불일치 위험이 있었습니다.",
+      "solution": "상대 위치를 유지한 이동·회전·복사 명령을 만들고, 새 상태를 모두 준비한 뒤 한 번에 확정했습니다. 하나라도 등록에 실패하면 임시 시설을 해제하고 원본과 비용 정책을 역순으로 복구합니다.",
+      "result": "실행 취소·다시 실행과 배치 설계도 저장·재사용을 구현했고, 부분 실패·반복 실행 취소·비용 보존 시나리오를 다룬 자동화 테스트 **174개**가 통과했습니다(실패 0).",
+      "side": [
+        {
+          "type": "flow",
+          "steps": [
+            "새 상태 준비",
+            "공간·비용 검사",
+            "정책 임시 적용",
+            "시설 등록",
+            "전체 확정·알림"
+          ],
+          "fail": "하나라도 실패하면 → 임시 시설 해제 · 원본 재등록 · 정책을 **역순**으로 Rollback",
+          "undo": "**실행 취소** 현재 가격이 아닌 작업 당시 지불·환급 기록을 반대로 적용 · 최근 64개 작업 보관"
+        },
+        {
+          "type": "code",
+          "file": "FF_FFZSWorldSubsystem_ConstructionHistory.cpp",
+          "code": "bool bRegistered = true;\nfor (auto& Pair : Staged) if (!RegisterFacility(Pair.Value)) { bRegistered = false; break; }\nif (!bRegistered)\n{\n    for (auto& Pair : Staged) UnregisterFacility(Pair.Value);\n    for (auto& Pair : Originals) ensure(RegisterFacility(Pair.Value));\n    for (int32 Index = Contexts.Num() - 1; Index >= 0; --Index) RollbackPolicies(Contexts[Index], Policies[Index]);\n    DestroyStaged();\n    return MakeFailure(EFFZSPlacementFailure::InternalError, LOCTEXT(\"BatchRegister\", \"그룹 등록에 실패하여 원래 배치를 복구했습니다.\"));\n}",
+          "size": "sm"
+        }
+      ]
+    },
+    {
+      "type": "trouble",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · TROUBLESHOOTING 04",
+      "title": "지형을 고치지 않고 군중 AI의 길을 되찾았습니다",
+      "link": {
+        "label": "코드 변경 보기",
+        "url": "",
+        "icon": "gh"
+      },
+      "problem": "Test_Main 지형은 45~582cm 단차 슬래브가 이어진 구조라 NavMesh가 단차마다 끊겼습니다. 구역 모서리 한 점을 대표 접근점으로 써서, 걸어갈 수 있는 구역도 도달 불가로 판정됐습니다.",
+      "solution": "게임·PIE 월드에서만 생성되는 WorldSubsystem을 만들어 에디터 레벨을 건드리지 않았습니다. 접근점이 없는 구역만 골라 경계 내부를 반감 격자로 샘플링하고, ProjectPointToNavigation·GetPathLength로 실제 경로가 있는 점을 주입했습니다.",
+      "result": "첫 AI 결정 전(OnWorldBeginPlay)에 보정을 끝내고, 보정할 수 없는 구역은 좌표와 함께 보고합니다.",
+      "side": [
+        {
+          "type": "diagram",
+          "id": "zone"
+        },
+        {
+          "type": "metrics",
+          "items": [
+            {
+              "value": "65% → 100%",
+              "label": "출구 도달 가능 구역",
+              "sub": "유효 구역 전부 복구"
+            },
+            {
+              "value": "14~16 → 0",
+              "label": "격자 정렬에 따른 결과 편차",
+              "sub": "앞 단계 표본을 뒤 단계가 포함"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "trouble",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · TROUBLESHOOTING 05",
+      "title": "에디터에선 정상, 패키지에선 틀어지던 원인을 찾았습니다",
+      "link": {
+        "label": "코드 변경 보기",
+        "url": "",
+        "icon": "gh"
+      },
+      "problem": "Win64 Shipping Cook 후 Zone 좌표가 에디터와 달라지고, 카메라 시작 높이와 군중 입구 지면 처리에 오류가 생겼습니다.",
+      "solution": "런타임 Zone 13개가 에디터 전용 부모에 붙어 있어, Cook에서 부모가 제거되며 상대 위치만 남는 것을 확인했습니다. 월드 위치·회전·크기를 유지한 채 분리하고 부모 체인 검사를 추가했으며, 주차장 메시는 삼각형 기반 충돌로 바꿔 NavMesh를 재생성했습니다.",
+      "result": "빌드 전용 DDC와 배포 ZIP SHA-256 검사를 자동화했습니다. Cook 전후 Zone 좌표 오차 **0**, 프로젝트 자동화 테스트 **1,148개** 통과, 배포 파일 **100개** 해시가 모두 일치했습니다.",
+      "side": [
+        {
+          "type": "image",
+          "src": "img/ff_pkg_before.jpg",
+          "alt": "수정 전 Shipping 빌드 시작 화면. 카메라 시작 높이가 틀어져 화면에 지면만 보인다",
+          "caption": "**수정 전 · Shipping 빌드 시작 화면**\n카메라 시작 높이가 틀어져 지면만 보입니다",
+          "fit": "cover",
+          "height": "short"
+        },
+        {
+          "type": "compare",
+          "columns": [
+            {
+              "tone": "bad",
+              "title": "수정 전",
+              "top": "에디터 전용 부모",
+              "topNote": "Cook에서 제거됨",
+              "topGhost": true,
+              "arrow": "↓ 상대 위치만 남음",
+              "bottom": "런타임 Zone 13개",
+              "pos": "Cook 후 **(-7,410, -4,380) cm**\n원본 위치에서 이탈"
+            },
+            {
+              "tone": "ok",
+              "title": "수정 후",
+              "top": "부모 연결 해제",
+              "topNote": "월드 위치·회전·크기 유지",
+              "topGhost": false,
+              "arrow": "↓ 월드 좌표 그대로 저장",
+              "bottom": "런타임 Zone 13개",
+              "pos": "Cook 후 **(76,510, 30,270) cm**\n원본과 동일"
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "대표 사례 GZ_Tutorial · Cook 전후 Zone 데이터 비교"
+        },
+        {
+          "type": "metrics",
+          "items": [
+            {
+              "value": "13 / 13",
+              "label": "Zone 월드 좌표 보존",
+              "sub": ""
+            },
+            {
+              "value": "1,148",
+              "label": "자동화 테스트 통과",
+              "sub": ""
+            },
+            {
+              "value": "100 / 100",
+              "label": "배포 파일 해시 일치",
+              "sub": ""
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "trouble",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · TROUBLESHOOTING 06",
+      "title": "미리보기와 실제 효과가 같은 기준을 쓰게 했습니다",
+      "link": {
+        "label": "코드 변경 보기",
+        "url": "https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/a25bf9f7",
+        "icon": "gh"
+      },
+      "problem": "주변 시설 조합에 따라 수익 보너스가 붙는데, 배치 전 미리보기와 실제 적용이 다른 규칙으로 계산되면 효과가 과장될 수 있었습니다. 복제·이동 중인 시설이 이전 위치와 함께 집계되는 문제도 있었습니다.",
+      "solution": "UObject가 아닌 평가기(FFF_FacilitySynergyEvaluator) 하나를 실제 효과와 미리보기가 함께 쓰게 했습니다. 이동 대상의 기존 번호는 평가에서 빼고, 효과가 큰 규칙부터 적용하되 같은 그룹은 건너뛰고 전체 상한 안에서만 더합니다.",
+      "result": "월드를 바꾸지 않고 후보 위치의 효과 전후를 계산합니다. 동률은 규칙 이름 순으로 정해 계산 순서에 따른 표시 차이를 없앴습니다.",
+      "side": [
+        {
+          "type": "sameEval",
+          "sources": [
+            "실제 수익 보너스",
+            "배치 전 미리보기"
+          ],
+          "core": "같은 **Evaluate()** · 이동 대상의 기존 위치 제외 · 그룹 중복·전체 상한 적용"
+        },
+        {
+          "type": "code",
+          "file": "FF_FacilitySynergyEvaluator.cpp",
+          "code": "// … 정렬 람다 생략: 보너스가 큰 규칙 먼저, 같으면 규칙 이름 순\nTSet<FName> AppliedGroups;\nfor (const int32 MatchIndex : Active)\n{\n    FFF_FacilitySynergyMatch& Match = Result.Matches[MatchIndex];\n    const FFF_FacilitySynergyRow& Row = Rules[Match.RuleIndex].Row;\n    if (!Row.StackingGroup.IsNone() && AppliedGroups.Contains(Row.StackingGroup)) continue;\n    if (!Row.StackingGroup.IsNone()) AppliedGroups.Add(Row.StackingGroup);\n    Match.AppliedPercent = FMath::Min(Row.RevenueBonusPercent, FMath::Max(0.f, MaxPercent - Result.TotalPercent));\n    Result.TotalPercent += Match.AppliedPercent;\n}",
+          "size": "sm"
+        }
+      ]
+    },
+    {
+      "type": "cards",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · TROUBLESHOOTING 07–09",
+      "title": "그 밖의 개선",
+      "cards": [
+        {
+          "title": "통합 건설 영역과 기존 구역 데이터의 책임 분리",
+          "problem": "맞닿은 구역 경계 때문에 시설을 연속 배치하지 못했습니다. 31개 구역 데이터는 NPC 판단과 혼잡·이동 거리 계산에도 쓰이고 있었습니다.",
+          "solution": "BuildArea_Main으로 건설 영역만 통합하고 FFZSGameplayZone 31개는 보존했습니다. exact union/subtract로 경계와 실제 구멍을 구분했습니다.",
+          "result": "맞닿은 구역을 가로질러 배치할 수 있고, 재로딩·에디터 빌드·자동화 테스트 15개로 확인했습니다.",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/6c6c829",
+            "icon": "gh"
+          }
+        },
+        {
+          "title": "시설 선택과 캐릭터 이동 Collision channel 분리",
+          "problem": "플레이어 캐릭터가 설치한 시설을 통과했습니다. 선택용 프록시가 QueryOnly trace 전용이라 이동을 막지 못했습니다.",
+          "solution": "FacilitySelection은 선택 전용으로 유지하고, FacilityPlayerCollision을 추가해 캐릭터 capsule만 Block하도록 분리했습니다.",
+          "result": "캐릭터가 시설을 통과하지 않고, 선택 처리는 별도 channel에서 그대로 동작합니다.",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/46a7def",
+            "icon": "gh"
+          }
+        },
+        {
+          "title": "시설 수익 Data Table 일원화와 fingerprint 호환",
+          "problem": "115종 시설의 수익 규칙이 흩어져 있었고, override 필드를 항상 명령 fingerprint에 넣으면 기존 명령의 바이트 호환이 깨졌습니다.",
+          "solution": "DT_FacilityRevenues로 수익 규칙을 일원화하고, override가 켜졌거나 금액이 0이 아닐 때만 필드를 직렬화했습니다.",
+          "result": "기획자가 표 한 행으로 같은 종류의 수익을 조정하고, 기본 정책 명령은 기존 fingerprint를 유지합니다.",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/dcd448a",
+            "icon": "gh"
+          }
+        }
+      ]
+    },
+    {
+      "type": "learnings",
+      "section": "FESTA FIESTA!",
+      "tabs": "festa",
+      "eyebrow": "FESTA FIESTA! · LEARNINGS",
+      "title": "배운 점",
+      "items": [
+        "기존 시스템이 쓰는 데이터의 책임은 보존한 채, 새 기능의 처리 범위만 분리해야 합니다.",
+        "사용자 조작 기능은 좌표 계산뿐 아니라 NavMesh 갱신처럼 연쇄되는 런타임 비용까지 함께 설계해야 합니다.",
+        "여러 객체를 바꾸는 편집은 '전부 성공 또는 전부 복구' 규칙을 먼저 정해야 데이터가 어긋나지 않습니다.",
+        "에디터에서 맞는 것과 패키지에서 맞는 것은 다릅니다. Cook 결과를 직접 비교하는 검증 경로가 필요합니다."
+      ],
+      "next": "최적화는 측정부터 — 다음 프로젝트에서는 Unreal Insights로 시설 수에 따른 Game Thread 시간을 전후 비교해, 성능 개선을 숫자로 남기겠습니다."
+    },
+    {
+      "type": "intro",
+      "section": "LEFT BEHIND",
+      "tabs": "lb",
+      "id": "leftbehind",
+      "num": "02",
+      "title": "LEFT BEHIND",
+      "desc": "Unreal Engine 5.7로 제작한 5인 멀티플레이 보스 레이드 RPG입니다. 플레이어는 EOS 세션에서 파티를 구성하고 캐릭터를 선택한 뒤, 컷씬과 카운트다운을 거쳐 보스 MK-1 RUSTOR를 공략합니다. Seamless Travel 이후의 초기화 순서, 서버 권한 공격 판정, 레이드 결과 집계처럼 멀티플레이 진입과 전투 흐름의 안정성에 집중했습니다.",
+      "links": [
+        {
+          "label": "GitHub",
+          "url": "https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project",
+          "icon": "gh"
+        }
+      ],
+      "image": "img/lb_title.jpg",
+      "alt": "LEFT BEHIND 타이틀 화면",
+      "meta": [
+        {
+          "label": "기간",
+          "value": "2026.06 ~ 2026.07 (2개월)"
+        },
+        {
+          "label": "팀 구성",
+          "value": "5인 팀 프로젝트"
+        },
+        {
+          "label": "개발 환경",
+          "value": "UE 5.7.4 · C++ · GAS · EOS · Online Subsystem · Slate"
+        }
+      ],
+      "roles": [
+        "EOS 세션 생성·참가·초대·방 이름 검증",
+        "Seamless Travel 기반 레이드 시작 흐름",
+        "서버 권한 기본공격 입력·연사 판정",
+        "레이드 MVP 산식·스코어보드 집계"
+      ]
+    },
+    {
+      "type": "architecture",
+      "section": "LEFT BEHIND",
+      "tabs": "lb",
+      "eyebrow": "LEFT BEHIND · ARCHITECTURE",
+      "title": "서비스 구조",
+      "link": {
+        "label": "",
+        "url": "",
+        "icon": "gh"
+      },
+      "lead": "레이드 진입부터 결과 화면까지, 네 개의 핵심 클래스를 주로 구현했습니다.",
+      "points": [
+        {
+          "title": "ULB_GameInstance",
+          "text": "EOS 세션 생성·검색·초대를 맡는 서브시스템과 공용 데이터 타입"
+        },
+        {
+          "title": "ALB_RaidGameMode",
+          "text": "준비 완료 Barrier로 모든 클라이언트가 모인 뒤 레이드 시작"
+        },
+        {
+          "title": "ALB_PlayerController",
+          "text": "서버 권한 기본공격 입력과 Seamless Travel 뒤 HUD 초기화"
+        },
+        {
+          "title": "ULB_BattleHUDWidget",
+          "text": "캐릭터 선택·전투 HUD·MVP 스코어보드 표시"
+        }
+      ],
+      "code": {
+        "file": "",
+        "code": "",
+        "size": "xs"
+      },
+      "diagram": "lb_arch"
+    },
+    {
+      "type": "pair",
+      "section": "LEFT BEHIND",
+      "tabs": "lb",
+      "eyebrow": "LEFT BEHIND · TROUBLESHOOTING 01–02",
+      "items": [
+        {
+          "image": "img/lb_countdown.jpg",
+          "alt": "레이드 시작 카운트다운 화면",
+          "title": "레이드 시작을 준비 완료 Barrier로 동기화",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/ee29fc2c39b19a00caec20189f27fa9787d4cf26",
+            "icon": "gh"
+          },
+          "problem": "새 Controller·PlayerState가 준비되기 전 컷씬이 자동 재생돼, 클라이언트가 입장한 뒤 전투가 시작되지 않았습니다.",
+          "solution": "준비 RPC를 받은 인원을 ExpectedRaidPlayers와 비교해 모두 모이면 컷씬·카운트다운을 시작하고, 타임아웃도 뒀습니다.",
+          "result": "모든 클라이언트가 준비된 뒤 레이드가 시작되는 것을 진입 흐름으로 확인했습니다.",
+          "side": [
+            {
+              "type": "code",
+              "file": "LB_RaidGameMode.cpp",
+              "code": "const int32 RequiredPlayers = ExpectedRaidPlayerCount > 0\n    ? ExpectedRaidPlayerCount\n    : FMath::Max(1, GetNumPlayers());\nif (RaidReadyControllers.Num() < RequiredPlayers)\n{\n    return;\n}\nbRaidStartTriggered = true;",
+              "size": "xs"
+            }
+          ]
+        },
+        {
+          "image": "img/lb_boss.jpg",
+          "alt": "보스 MK-1 RUSTOR 전투 화면",
+          "title": "기본공격 연사 판정을 서버 타이머로 일원화",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/56b061e5989d9993ced3939234c614ac18031c17",
+            "icon": "gh"
+          },
+          "problem": "Triggered 이벤트마다 클라이언트가 간격을 재고 RPC를 보내, 입력 프레임과 네트워크 지연에 따라 연사 간격이 달라졌습니다.",
+          "solution": "눌림·뗌 상태만 ServerSetPrimaryHeld로 보내고, 서버 타이머가 최소 간격을 검사해 공격을 활성화합니다.",
+          "result": "연사 판정이 서버 시각 기준으로 통일됐고, RPC는 상태가 바뀔 때만 전송됩니다.",
+          "side": [
+            {
+              "type": "code",
+              "file": "LB_PlayerController.h",
+              "code": "// 서버가 실제 공격 시도 시각을 보관해 hold 타이머와\n// 단발 RPC가 동일한 rate gate를 공유한다.\ndouble LastPrimaryActivationServerTime = -1.0;\nbool bLocalPrimaryHeld = false;\nbool bServerPrimaryHeld = false;\nFTimerHandle ServerPrimaryRepeatTimerHandle;",
+              "size": "xs"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "pair",
+      "section": "LEFT BEHIND",
+      "tabs": "lb",
+      "eyebrow": "LEFT BEHIND · TROUBLESHOOTING 03–04",
+      "items": [
+        {
+          "image": "",
+          "alt": "",
+          "title": "역할 편향 없는 레이드 MVP 선정 산식",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "",
+            "icon": "gh"
+          },
+          "problem": "누적 피해량만으로 MVP를 뽑아, 피해와 회복의 단위·규모 차이 때문에 힐러가 구조적으로 선정될 수 없었습니다.",
+          "solution": "산식을 PlayerState와 분리된 순수 함수 네임스페이스(LBRaidMVP)로 만들어 단위 테스트가 가능하게 하고, 역할별 정규화와 가중합을 적용했습니다.",
+          "result": "자동화 테스트 5종으로 역할 공정성, 결과 결정성, 비정상 입력 방어를 검증했습니다.",
+          "side": [
+            {
+              "type": "formula",
+              "main": "점수 = **0.8** × 주 기여_{정규화} + **0.2** × 보조 기여_{정규화}",
+              "rows": [
+                {
+                  "k": "정규화",
+                  "v": "값 ÷ 같은 역할의 최댓값 → 0~1 (딜러·힐러 규모 차이 제거)"
+                },
+                {
+                  "k": "동점",
+                  "v": "사망 수 → 주 기여 → PlayerId 순 안정 정렬"
+                },
+                {
+                  "k": "방어",
+                  "v": "NaN · Infinity · 음수 입력 정리(SanitizeStat)"
+                }
+              ],
+              "tags": "Formula · RoleFairness · ZeroContribution · InvalidStats · TieBreaks"
+            },
+            {
+              "type": "example",
+              "text": "딜러 A 피해 9,000 · 힐러 B 회복 3,000이 각자 역할의 최댓값이면 둘 다 **1.0**으로 정규화돼, 단위가 달라도 같은 기준에서 비교됩니다."
+            }
+          ]
+        },
+        {
+          "image": "",
+          "alt": "",
+          "title": "오버킬·오버힐을 걸러낸 스코어보드 집계",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "",
+            "icon": "gh"
+          },
+          "problem": "GAS가 HP 적용 전 수치를 그대로 통계에 반영해, 보스 오버킬과 파티원 오버힐이 실제 HP 변화보다 크게 집계됐습니다.",
+          "solution": "PreGameplayEffectExecute에서 적용 전 수치를 제한해 실제 변화량을 구하고, 서버 권한·전투 중·0이 아닌 변화만 집계해 클라이언트 중복과 자기 회복을 제외했습니다.",
+          "result": "피해·회복 통계와 이벤트 브로드캐스트를 실제 HP 변화량 기준으로 통일해 과대 집계를 없앴습니다.",
+          "side": [
+            {
+              "type": "steps",
+              "items": [
+                "GE 적용 전 수치",
+                "0 ~ MaxHealth로 clamp",
+                "실제 변화량\nEffectiveDelta",
+                "서버 권한 · 전투 중\n0이 아닌 변화만"
+              ],
+              "last": "보스 피격 = 피해\n타 파티원 회복 = 회복"
+            },
+            {
+              "type": "example",
+              "text": "남은 HP가 200인 보스에게 500 피해를 주면, 기존에는 ~~500~~이 집계됐고 변경 후에는 실제 HP 변화량인 **200**만 집계됩니다."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "cards",
+      "section": "LEFT BEHIND",
+      "tabs": "lb",
+      "eyebrow": "LEFT BEHIND · TROUBLESHOOTING 05–07",
+      "title": "멀티플레이 진입 흐름 안정화",
+      "cards": [
+        {
+          "title": "Seamless Travel 뒤 레이드 HUD 초기화 재시도",
+          "problem": "원격 클라이언트가 레이드에 들어간 뒤 HUD를 보지 못할 수 있었습니다. Controller BeginPlay가 로컬 플레이어 연결보다 먼저 실행됐습니다.",
+          "solution": "ReceivedPlayer·BeginPlayingState·OnRep_PlayerState에서 중복 생성에 안전한 초기화를 재호출하고, GetLocalPlayer 검사를 추가했습니다.",
+          "result": "Pawn과 GameState 복제가 늦어도 준비가 끝나면 HUD가 붙습니다.",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/25c860163da82a675615da52004617aa7caeeb89",
+            "icon": "gh"
+          }
+        },
+        {
+          "title": "EOS 친구 초대의 누락된 소유자 정보 보정",
+          "problem": "친구 초대를 수락해도 방 참가로 넘어가지 못했습니다. UE 5.7 초대 payload의 OwningUserId가 비면 유효한 세션까지 거부했습니다.",
+          "solution": "세션 정보가 유효하면 초대를 수락하고, 소유자가 비면 같은 세션 ID의 캐시 검색 결과에서 정보를 복원했습니다.",
+          "result": "소유자 정보가 없는 초대도 참가 절차로 넘어가고, 다른 로비 소유자를 복사하지 않는 자동화 테스트를 통과했습니다.",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/c016f76284b8e393eb4a975a111cacdfdee8cb6b",
+            "icon": "gh"
+          }
+        },
+        {
+          "title": "방 이름 검증과 방 생성 취소 상태 분리",
+          "problem": "방장 닉네임으로만 방을 구분해 같은 닉네임 방을 구별할 수 없었고, 방 생성 취소가 입력 상태와 묶여 뒤로가기 시 메뉴가 복구되지 않았습니다.",
+          "solution": "방 이름 정규화(공백 제거·한글/영문/숫자 2~24자)와 생성 전 같은 이름 조회를 추가하고, bRoomCreationActive·CancelRoomCreation으로 취소 상태를 분리했습니다.",
+          "result": "같은 이름의 방 생성을 사전 조회로 막고, 방 생성 → 목록 → 루트 메뉴까지 뒤로가기가 이어집니다.",
+          "link": {
+            "label": "코드 변경 보기",
+            "url": "https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/eba7f514cd2039457cb25360932ff3b01a120cae",
+            "icon": "gh"
+          }
+        }
+      ]
+    },
+    {
+      "type": "learnings",
+      "section": "LEFT BEHIND",
+      "tabs": "lb",
+      "eyebrow": "LEFT BEHIND · LEARNINGS",
+      "title": "배운 점",
+      "items": [
+        "Seamless Travel 뒤에는 객체 준비 순서를 가정하지 말고, 서버의 준비 조건과 클라이언트 재진입 경로를 함께 설계해야 합니다.",
+        "연속 입력의 전투 판정은 클라이언트 프레임이 아니라 서버 시각과 타이머를 기준으로 일원화해야 합니다.",
+        "외부 온라인 서비스의 일시적 실패는 적용 범위와 최대 횟수가 제한된 지수 백오프로 복구해야 합니다.",
+        "멀티플레이 UI는 단발 Snapshot이 아니라 GameState 변경 이벤트와 델리게이트로 갱신해야 합니다."
+      ],
+      "next": "방 이름 중복 검사는 '조회 후 생성' 사이에 동시 생성 가능성이 남습니다. 다음에는 서버 측 고유 키 예약으로 원자적으로 보장하겠습니다."
+    },
+    {
+      "type": "thanks",
+      "eyebrow": "THANK YOU",
+      "title": "감사합니다",
+      "lead": "시설이 놓이는 순간부터 패키징 빌드까지, 그리고 레이드 입장부터 결과 화면까지 —\n보이지 않는 경계에서 시스템이 어긋나지 않도록 만드는 프로그래머가 되겠습니다.",
+      "links": [
+        {
+          "label": "github.com/kpo9101",
+          "url": "https://github.com/kpo9101",
+          "icon": "gh"
+        },
+        {
+          "label": "Festa Fiesta! 시연 영상",
+          "url": "https://youtu.be/olpAoV4WH7Y",
+          "icon": "yt"
+        },
+        {
+          "label": "프로젝트 브로셔",
+          "url": "https://teamsparta.notion.site/8-13-Festa-Fiesta-3b12dc3ef514808a9247c952c9ecf639",
+          "icon": "doc"
+        }
+      ]
+    }
+  ]
+}
