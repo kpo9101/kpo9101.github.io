@@ -1,0 +1,695 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>한광훈 포트폴리오</title>
+<meta name="description" content="Unreal C++ 게임 클라이언트 프로그래머 한광훈의 포트폴리오 — Festa Fiesta! 건축 플러그인·OBB/SAT 배치·패키징 안정화, LEFT BEHIND EOS 멀티플레이">
+<meta property="og:type" content="website">
+<meta property="og:title" content="한광훈 포트폴리오 · Unreal C++ 게임 클라이언트 프로그래머">
+<meta property="og:description" content="Unreal C++ 게임 클라이언트 프로그래머 한광훈의 포트폴리오 — Festa Fiesta! 건축 플러그인·OBB/SAT 배치·패키징 안정화, LEFT BEHIND EOS 멀티플레이">
+<meta property="og:url" content="https://kpo9101.github.io/">
+<meta property="og:image" content="https://kpo9101.github.io/img/ff_cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c0c0d'/%3E%3Ctext x='32' y='43' font-size='30' font-family='sans-serif' font-weight='800' fill='%23fafafa' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+<style>:root { color-scheme: light; } html, body { margin: 0; } @font-face { font-family: "Pretendard"; font-weight: 45 920; font-display: swap; src: url("fonts/PretendardVariable.woff2") format("woff2-variations"), url("fonts/PretendardVariable.woff2") format("woff2"); }
+@font-face { font-family: "JBMono"; font-weight: 400; src: url("fonts/jetbrains-mono-latin-400-normal.woff2") format("woff2"); }
+@font-face { font-family: "JBMono"; font-weight: 600; src: url("fonts/jetbrains-mono-latin-600-normal.woff2") format("woff2"); }
+
+:root {
+  --bg: #ffffff; --fg: #111214; --body: #45474d; --muted: #8a8c92; --line: #e4e5e8; --card: #f4f5f7; --chip-bd: #cfd1d6;
+  --accent: #2457d6; --ok: #0b7a47; --bad: #c2412d; --em: #111214;
+  --dg-bg: #f1f2f5; --bx-s: #111214; --bx-s-fg: #ffffff; --bx-w: #ffffff; --bx-w-fg: #111214; --bx-bd: #111214;
+  --code-bg: #15171d; --code-head: #1e2129; --code-fg: #d7dae0; --code-bd: #15171d;
+  --dark-bg: #0c0c0d; --dark-fg: #f4f4f5;
+  --slab0: #dde3ea; --slab1: #cfd7e1; --slab2: #c0cad7; --focus: #2457d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131417; --fg: #eeeff1; --body: #b9bbc1; --muted: #8b8e95; --line: #2a2c31; --card: #1c1e22; --chip-bd: #3a3d44;
+    --accent: #7ea2ff; --ok: #4cc38a; --bad: #ff8a73; --em: #ffffff;
+    --dg-bg: #1a1c20; --bx-s: #eeeff1; --bx-s-fg: #111214; --bx-w: #1f2126; --bx-w-fg: #eeeff1; --bx-bd: #cfd1d6;
+    --slab0: #2a3038; --slab1: #323a44; --slab2: #3b4450; --focus: #7ea2ff; --code-bg: #0d0e12; --code-head: #17191f; --code-bd: #2e3138; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131417; --fg: #eeeff1; --body: #b9bbc1; --muted: #8b8e95; --line: #2a2c31; --card: #1c1e22; --chip-bd: #3a3d44;
+  --accent: #7ea2ff; --ok: #4cc38a; --bad: #ff8a73; --em: #ffffff;
+  --dg-bg: #1a1c20; --bx-s: #eeeff1; --bx-s-fg: #111214; --bx-w: #1f2126; --bx-w-fg: #eeeff1; --bx-bd: #cfd1d6;
+  --slab0: #2a3038; --slab1: #323a44; --slab2: #3b4450; --focus: #7ea2ff; --code-bg: #0d0e12; --code-head: #17191f; --code-bd: #2e3138; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--fg); font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans CJK KR", "Noto Sans KR", system-ui, sans-serif; word-break: keep-all; overflow-wrap: anywhere; -webkit-print-color-adjust: exact; print-color-adjust: exact; text-rendering: optimizeLegibility; }
+a { color: inherit; text-decoration: none; }
+a:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+figure { margin: 0; }
+img { display: block; max-width: 100%; }
+h1, h2, h3, h4, h5, p { margin: 0; }
+ul { margin: 0; padding-left: 18px; }
+
+/* ---------- shared components ---------- */
+.page { position: relative; background: var(--bg); color: var(--fg); }
+.page.dark { background: var(--dark-bg); color: var(--dark-fg); --fg: #f4f4f5; --body: #b4b6bc; --muted: #8d9096; --line: #2b2c30; --card: #18191c; --chip-bd: #3b3d42; --accent: #8aaaff; }
+.tabs { display: flex; gap: 22px; font-size: 13px; font-weight: 700; letter-spacing: .06em; color: var(--muted); }
+.tabs span { padding-bottom: 8px; border-bottom: 2px solid transparent; }
+.tabs span.on { color: var(--fg); border-color: var(--fg); }
+.eyebrow { font-size: 13px; font-weight: 700; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+.eyebrow.center { text-align: center; }
+.foot { display: flex; justify-content: space-between; font-size: 12px; font-weight: 700; letter-spacing: .04em; color: var(--muted); }
+.t-head { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.t-title { font-size: 38px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; color: var(--fg); }
+.pill { display: inline-flex; align-items: center; gap: 7px; padding: 7px 14px; border: 1px solid var(--chip-bd); border-radius: 999px; font-size: 13px; font-weight: 600; color: var(--fg); background: transparent; white-space: nowrap; }
+.pill:hover { border-color: var(--fg); }
+.pill-dark { border-color: #3b3d42; color: #f4f4f5; }
+.pills { display: flex; gap: 10px; flex-wrap: wrap; }
+em { font-style: normal; font-weight: 700; color: var(--em); }
+
+.blk h4 { font-size: 15px; font-weight: 700; color: var(--fg); padding-bottom: 10px; border-bottom: 1px solid var(--line); margin-bottom: 12px; }
+.blk h4 b { font-weight: 800; margin-right: 6px; letter-spacing: .02em; }
+.blk p { font-size: 16px; line-height: 1.75; color: var(--body); }
+.blk + .blk { margin-top: 26px; }
+
+.shot { border-radius: 14px; overflow: hidden; background: var(--card); }
+.shot img { width: 100%; height: 100%; object-fit: cover; }
+.shot.contain img { object-fit: contain; background: #f3f6f8; }
+
+.code { background: var(--code-bg); border-radius: 14px; overflow: hidden; color: var(--code-fg); border: 1px solid var(--code-bd); }
+.code-head { background: var(--code-head); padding: 10px 14px; }
+.code-head span { display: inline-block; font-size: 12.5px; font-weight: 700; color: #f1f2f4; background: #2a2e38; padding: 4px 10px; border-radius: 7px; }
+.code pre { margin: 0; padding: 16px 20px 18px; font-family: "JBMono", "DejaVu Sans Mono", ui-monospace, monospace; font-size: 12.6px; line-height: 1.62; white-space: pre-wrap; word-break: normal; overflow-wrap: anywhere; tab-size: 4; font-variant-ligatures: none; font-feature-settings: "liga" 0, "calt" 0; }
+.code-xs pre { font-size: 11.6px; padding: 12px 16px 14px; }
+.c-kw { color: #7aa2f7; font-weight: 600; } .c-fn { color: #e7c37a; } .c-ty { color: #c39bf3; } .c-id { color: #b5bcff; } .c-num { color: #f7936b; } .c-str { color: #9ece6a; } .c-com { color: #7a808c; font-family: "JBMono", "Pretendard", monospace; }
+
+.chips { display: flex; gap: 10px; flex-wrap: wrap; }
+.chip { border: 1px solid var(--chip-bd); border-radius: 999px; padding: 8px 16px; font-size: 14px; font-weight: 600; }
+.mini-h { font-size: 13px; font-weight: 700; letter-spacing: .08em; color: var(--muted); }
+.cards3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+.pcard { border: 1px solid var(--line); border-radius: 16px; padding: 22px 24px; display: flex; flex-direction: column; gap: 12px; background: var(--card); }
+.pcard h3 { font-size: 18px; font-weight: 750; letter-spacing: -0.01em; }
+.pcard p { font-size: 14.5px; line-height: 1.7; color: var(--body); flex: 1; }
+.pcard small { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; line-height: 1.5; }
+
+.metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.metric { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: var(--card); display: flex; flex-direction: column; gap: 4px; }
+.metric strong { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; color: var(--ok); }
+.metric span { font-size: 14px; font-weight: 600; color: var(--fg); }
+.metric small { font-size: 12.5px; color: var(--muted); }
+
+/* diagrams */
+.diagram { display: block; width: 100%; height: auto; font-family: "Pretendard", sans-serif; }
+.sv-bg { fill: var(--dg-bg); }
+.sv-h { font-size: 15px; font-weight: 700; fill: var(--fg); }
+.sv-t { font-size: 12.5px; font-weight: 600; fill: var(--muted); }
+.sv-bad { font-size: 13px; font-weight: 700; fill: var(--bad); }
+.sv-ok { font-size: 13px; font-weight: 700; fill: var(--ok); }
+.sv-div { stroke: var(--line); stroke-width: 1.5; }
+.sv-aabb { fill: none; stroke: var(--bad); stroke-width: 1.6; stroke-dasharray: 6 4; }
+.sv-hit { fill: var(--bad); opacity: .18; }
+.sv-ghost { fill: none; stroke: var(--muted); stroke-width: 1.4; opacity: .7; }
+.sv-obb { fill: var(--bx-s); }
+.sv-obb2 { fill: none; stroke: var(--fg); stroke-width: 2.4; }
+.sv-axis { stroke: var(--ok); stroke-width: 2; stroke-dasharray: 8 5; }
+.sv-slab { stroke: none; } .sv-slab0 { fill: var(--slab0); } .sv-slab1 { fill: var(--slab1); } .sv-slab2 { fill: var(--slab2); }
+.sv-nav { fill: #4cc38a; opacity: .28; }
+.sv-zone { fill: none; stroke: var(--fg); stroke-width: 2; stroke-dasharray: 2 0; }
+.sv-dot { fill: var(--fg); opacity: .45; } .sv-dot2 { fill: var(--accent); opacity: .7; }
+.sv-badg line { stroke: var(--bad); stroke-width: 3; stroke-linecap: round; }
+.sv-exit { fill: var(--bx-s); } .sv-exitt { font-size: 11px; font-weight: 700; fill: var(--bx-s-fg); }
+.sv-path { fill: none; stroke: var(--ok); stroke-width: 2.4; stroke-dasharray: 6 4; }
+.sv-anchor { fill: var(--ok); } .sv-check { fill: none; stroke: #fff; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.mod { fill: none; stroke: var(--muted); stroke-width: 1.2; stroke-dasharray: 5 4; }
+.mod-t { font-size: 13px; font-weight: 700; fill: var(--muted); letter-spacing: .02em; }
+.bx-s .bx-body, .bx-s .bx-tab { fill: var(--bx-s); stroke: var(--bx-s); }
+.bx-s .bx-tag { fill: var(--bx-s-fg); } .bx-s .bx-title { fill: var(--bx-s-fg); } .bx-s .bx-desc { fill: var(--bx-s-fg); opacity: .82; }
+.bx-w .bx-body, .bx-w .bx-tab { fill: var(--bx-w); stroke: var(--bx-bd); stroke-width: 1.6; }
+.bx-w .bx-tag, .bx-w .bx-title, .bx-w .bx-desc { fill: var(--bx-w-fg); } .bx-w .bx-desc { opacity: .8; }
+.bx-i .bx-body { stroke-dasharray: 0; }
+.bx-tag { font-family: "JBMono", monospace; font-size: 11.5px; font-weight: 600; }
+.bx-title { font-size: 18px; font-weight: 800; letter-spacing: -0.01em; }
+.bx-desc { font-size: 13.5px; font-weight: 500; }
+.ar { stroke: var(--fg); stroke-width: 1.6; stroke-dasharray: 5 4; }
+.ar-h { stroke: var(--fg); stroke-width: 1.6; }
+.ar-t { font-size: 12px; font-weight: 700; fill: var(--fg); }
+.lg-s { fill: var(--bx-s); } .lg-w { fill: var(--bx-w); stroke: var(--bx-bd); stroke-width: 1.4; }
+.lg-t { font-size: 12.5px; font-weight: 600; fill: var(--muted); }
+
+/* flow / formula / steps */
+.flow { background: var(--dg-bg); border-radius: 14px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+.fl-row { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.fl-row span { background: var(--bx-s); color: var(--bx-s-fg); font-size: 13px; font-weight: 700; padding: 9px 11px; border-radius: 9px; }
+.fl-row span.fl-ok { background: var(--ok); color: #fff; }
+.fl-row i { font-style: normal; color: var(--muted); font-weight: 700; }
+.fl-back { font-size: 13.5px; font-weight: 600; color: var(--bad); border-left: 3px solid var(--bad); padding: 4px 0 4px 12px; }
+.fl-undo { font-size: 13.5px; color: var(--body); border-left: 3px solid var(--accent); padding: 4px 0 4px 12px; }
+.fl-undo b { color: var(--fg); margin-right: 6px; } .fl-undo u { text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.same-eval { background: var(--dg-bg); border-radius: 14px; padding: 16px; display: flex; flex-direction: column; align-items: center; gap: 6px; }
+.se-src { display: flex; gap: 12px; } .se-src span { border: 1.6px solid var(--bx-bd); background: var(--bx-w); color: var(--bx-w-fg); border-radius: 9px; padding: 8px 14px; font-size: 13.5px; font-weight: 700; }
+.se-arrow { color: var(--muted); font-weight: 800; letter-spacing: 10px; }
+.se-core { background: var(--bx-s); color: var(--bx-s-fg); border-radius: 10px; padding: 10px 16px; font-size: 13.5px; font-weight: 600; text-align: center; }
+.formula { background: var(--dg-bg); border-radius: 14px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px; }
+.fx { font-size: 17px; font-weight: 600; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+.fx b { color: var(--accent); font-weight: 800; } .fx-k { font-weight: 800; } .fx sub { font-size: 11px; color: var(--muted); }
+.fx-row { font-size: 14px; color: var(--body); } .fx-row span { display: inline-block; min-width: 52px; font-weight: 800; color: var(--fg); }
+.tags { font-family: "JBMono", monospace; font-size: 12px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 10px; }
+.steps { background: var(--dg-bg); border-radius: 14px; padding: 20px 18px; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.steps span { background: var(--bx-w); border: 1.6px solid var(--bx-bd); color: var(--bx-w-fg); font-size: 13px; font-weight: 700; padding: 9px 10px; border-radius: 9px; line-height: 1.35; text-align: center; }
+.steps span.ok { background: var(--bx-s); color: var(--bx-s-fg); border-color: var(--bx-s); }
+.steps i { font-style: normal; color: var(--muted); font-weight: 800; }
+
+.example { display: flex; gap: 14px; align-items: baseline; border: 1px dashed var(--chip-bd); border-radius: 12px; padding: 14px 16px; }
+.example span { font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--accent); white-space: nowrap; }
+.example p { font-size: 14.5px; line-height: 1.65; color: var(--body); }
+.example b { color: var(--fg); } .example s { color: var(--bad); }
+
+/* packaging comparison */
+.pkg-shot { position: relative; }
+.pkg-shot img { object-position: center bottom; }
+.pkg-shot figcaption { position: absolute; left: 0; right: 0; top: 0; padding: 12px 16px 26px; font-size: 13px; line-height: 1.5; color: #f2f2f3; background: linear-gradient(to bottom, rgba(0,0,0,.62), rgba(0,0,0,0)); }
+.pkg-shot figcaption b { display: block; font-size: 14px; font-weight: 800; }
+.cmp { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.cmp-col { border-radius: 14px; padding: 14px 16px; background: var(--dg-bg); display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.cmp-col h5 { font-size: 13px; font-weight: 800; letter-spacing: .02em; }
+.cmp-col.bad h5 { color: var(--bad); } .cmp-col.ok h5 { color: var(--ok); }
+.cmp .node { background: var(--bx-s); color: var(--bx-s-fg); border-radius: 9px; padding: 8px 12px; font-size: 13.5px; font-weight: 700; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.cmp .node small { font-size: 11.5px; font-weight: 600; opacity: .8; }
+.cmp .node.ghost { background: transparent; color: var(--fg); border: 1.6px dashed var(--muted); }
+.cmp .link { font-size: 12.5px; font-weight: 700; color: var(--muted); padding-left: 4px; }
+.cmp .pos { font-size: 13px; line-height: 1.5; color: var(--body); margin-top: 2px; }
+.cmp-col.bad .pos b { color: var(--bad); } .cmp-col.ok .pos b { color: var(--ok); }
+.cmp-note { font-size: 12px; color: var(--muted); margin-top: -4px; }
+.metrics.m3 { grid-template-columns: repeat(3, 1fr); }
+.metrics.m3 .metric { padding: 12px 14px; }
+.metrics.m3 .metric strong { font-size: 22px; }
+.metrics.m3 .metric span { font-size: 13px; }
+
+/* mini cards */
+.mcard { border: 1px solid var(--line); border-radius: 16px; padding: 24px 24px 22px; background: var(--card); display: flex; flex-direction: column; gap: 14px; }
+.mcard h3 { font-size: 19px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.35; }
+.mcard dl { margin: 0; display: grid; grid-template-columns: 38px 1fr; row-gap: 14px; column-gap: 10px; align-content: start; }
+.mcard dt { font-size: 13px; font-weight: 800; color: var(--fg); padding-top: 2px; }
+.mcard dd { margin: 0; font-size: 14.5px; line-height: 1.68; color: var(--body); }
+.mcard .pill { align-self: flex-start; margin-top: auto; }
+
+/* learnings */
+.ln-title { font-size: 56px; font-weight: 850; letter-spacing: -0.03em; color: var(--fg); }
+.lrn-grid { display: grid; grid-template-columns: 1fr 1fr; column-gap: 64px; }
+.lrn { padding: 22px 0; border-bottom: 2px solid var(--line); }
+.lrn span { font-size: 12px; font-weight: 800; letter-spacing: .06em; color: var(--fg); }
+.lrn p { font-size: 20px; line-height: 1.65; color: var(--body); margin-top: 10px; }
+.next { margin-top: 26px; display: flex; gap: 18px; align-items: baseline; background: var(--fg); color: var(--bg); border-radius: 14px; padding: 18px 22px; }
+.next span { font-size: 12px; font-weight: 800; letter-spacing: .08em; opacity: .7; }
+.next p { font-size: 16px; line-height: 1.6; font-weight: 600; }
+
+/* cover */
+.cv-eyebrow { font-size: 22px; font-weight: 800; letter-spacing: .02em; color: #9a9ca2; }
+.cv-title { font-size: 220px; font-weight: 900; letter-spacing: -0.03em; line-height: .95; color: #fafafa; margin-top: 18px; }
+.cv-bottom { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #2c2d31; padding-top: 30px; }
+.cv-name { font-size: 30px; font-weight: 800; color: #fafafa; }
+.cv-contact { display: flex; gap: 26px; font-size: 18px; color: #a6a8ae; flex-wrap: wrap; }
+.cv-contact a { color: #fafafa; text-decoration: underline; text-underline-offset: 4px; text-decoration-color: #555; }
+
+/* about */
+.ab-title { font-size: 48px; font-weight: 850; letter-spacing: -0.025em; line-height: 1.22; color: #fafafa; margin-top: 18px; }
+.ab-lead { font-size: 19px; line-height: 1.75; color: #b4b6bc; max-width: 1000px; margin-top: 22px; }
+.about .mini-h { margin: 30px 0 12px; }
+.about .pcard { background: #141518; border-color: #2b2c30; }
+
+/* contents */
+.ct-list { display: flex; flex-direction: column; gap: 0; margin-top: 18px; }
+.ct-row { display: grid; grid-template-columns: 110px 1fr 420px; gap: 32px; align-items: center; padding: 34px 0; border-bottom: 1px solid var(--line); }
+.ct-row:first-child { border-top: 2px solid var(--fg); }
+.ct-num { font-size: 64px; font-weight: 300; letter-spacing: -0.02em; color: var(--fg); }
+.ct-body h3 { font-size: 36px; font-weight: 850; letter-spacing: -0.02em; }
+.ct-body p { font-size: 15px; color: var(--muted); margin-top: 6px; font-weight: 600; }
+.ct-body ul { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.ct-body li { font-size: 13.5px; font-weight: 600; border: 1px solid var(--chip-bd); border-radius: 999px; padding: 6px 12px; }
+.ct-thumb { height: 190px; border-radius: 14px; }
+.ct-thumb img { height: 100%; object-fit: cover; }
+
+/* intro */
+.in-num { display: flex; align-items: center; gap: 22px; }
+.in-num span { font-size: 54px; font-weight: 300; color: #fafafa; }
+.in-num i { flex: 1; height: 1px; background: #3a3b40; }
+.in-title { font-size: 92px; font-weight: 850; letter-spacing: -0.035em; line-height: 1; color: #fafafa; }
+.in-desc { font-size: 18px; line-height: 1.8; color: #c3c5ca; margin: 26px 0 26px; }
+.in-meta h5 { font-size: 13px; font-weight: 700; color: #8d9096; margin-bottom: 8px; letter-spacing: .02em; }
+.in-meta p { font-size: 16px; color: #e9e9ea; line-height: 1.5; }
+.meta-r { border-left: 3px solid #5a5c62; padding-left: 24px; }
+.meta-r ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+.meta-r li { font-size: 16px; color: #e9e9ea; padding-left: 16px; position: relative; }
+.meta-r li::before { content: ""; position: absolute; left: 0; top: .62em; width: 5px; height: 5px; border-radius: 50%; background: #e9e9ea; }
+
+/* gallery */
+.g-item { position: relative; border-radius: 14px; overflow: hidden; background: var(--card); }
+.g-item img { width: 100%; height: 100%; object-fit: cover; }
+.g-item figcaption { position: absolute; left: 0; right: 0; bottom: 0; padding: 26px 16px 12px; font-size: 13px; line-height: 1.5; color: #f2f2f3; background: linear-gradient(to top, rgba(0,0,0,.78), rgba(0,0,0,0)); }
+.g-item figcaption b { display: block; font-size: 14.5px; font-weight: 800; margin-bottom: 2px; }
+
+/* architecture */
+.ar-points { display: flex; flex-direction: column; gap: 20px; }
+.ar-lead { font-size: 17px; line-height: 1.7; color: var(--body); }
+.pt { display: grid; grid-template-columns: 30px 1fr; gap: 12px; }
+.pt > span { width: 28px; height: 28px; border-radius: 50%; background: var(--fg); color: var(--bg); font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.pt h4 { font-size: 16.5px; font-weight: 800; margin-bottom: 4px; }
+.pt p { font-size: 14.5px; line-height: 1.65; color: var(--body); }
+
+/* LB pair */
+.pair-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+.half { display: flex; flex-direction: column; gap: 12px; }
+.half-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.half-head h3 { font-size: 22px; font-weight: 800; letter-spacing: -0.015em; line-height: 1.3; }
+.hb { display: grid; grid-template-columns: 38px 1fr; gap: 10px; }
+.hb b { font-size: 13px; font-weight: 800; padding-top: 2px; }
+.hb p { font-size: 14.5px; line-height: 1.65; color: var(--body); }
+
+/* thanks */
+.th-title { font-size: 120px; font-weight: 900; letter-spacing: -0.03em; text-align: center; color: #fafafa; line-height: 1.05; margin-top: 18px; }
+.th-lead { font-size: 21px; line-height: 1.8; text-align: center; color: #d8d9dc; margin-top: 30px; }
+.th-links { display: flex; justify-content: center; gap: 12px; margin-top: 34px; flex-wrap: wrap; }
+.th-contact { text-align: center; color: #8d9096; font-size: 16px; font-weight: 600; margin-top: 26px; }
+
+/* =========================================================== DECK (fixed 16:9 pages) */
+@page { size: 1440px 810px; margin: 0; }
+.deck .page { width: 1440px; height: 810px; padding: 52px 80px 0; overflow: hidden; break-after: page; page-break-after: always; }
+.deck .page:last-child { break-after: auto; page-break-after: auto; }
+.deck .foot { position: absolute; left: 80px; right: 80px; bottom: 28px; }
+.deck .light .eyebrow:not(.center) { display: none; }
+.deck .tabs { margin-bottom: 30px; }
+.deck .t-head { margin-bottom: 30px; }
+.deck .tr-grid { display: grid; grid-template-columns: 596px 1fr; gap: 60px; }
+.deck .tr-side { display: flex; flex-direction: column; gap: 14px; }
+.deck .side-img { height: 300px; }
+.deck .side-img.short { height: 232px; }
+.deck .pkg-shot { height: 226px; }
+.deck .pkg-shot ~ .cmp .node { padding: 7px 11px; }
+.deck .side-img.contain { height: 560px; }
+.deck .cover { padding: 0 124px; display: flex; flex-direction: column; justify-content: center; }
+.deck .cover .cv-bottom { position: absolute; left: 124px; right: 124px; bottom: 64px; }
+.deck .about { padding-top: 64px; }
+.deck .contents { padding-top: 64px; }
+.deck .intro { padding-top: 56px; }
+.deck .in-grid { display: grid; grid-template-columns: 1fr 520px; gap: 60px; margin-top: 20px; }
+.deck .in-img { height: 374px; }
+.deck .in-meta { position: absolute; left: 80px; right: 80px; bottom: 74px; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; }
+.deck .meta-l { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 28px; }
+.deck .meta-l > div:last-child { grid-column: 1 / -1; }
+.deck .g-grid { display: grid; grid-template-columns: 1.15fr 1fr; grid-template-rows: 300px 216px; gap: 16px; }
+.deck .g-a { grid-row: 1; grid-column: 1; } .deck .g-b { grid-row: 1; grid-column: 2; }
+.deck .g-c { grid-row: 2; grid-column: 1; } .deck .g-d { grid-row: 2; grid-column: 2; }
+.deck .ar-grid { display: grid; grid-template-columns: 404px 1fr; gap: 44px; align-items: start; }
+.deck .ar-points .code pre { font-size: 11.2px; }
+.deck .more .cards3 { margin-top: 6px; }
+.deck .more .mcard { min-height: 500px; padding: 28px 26px 24px; }
+.deck .more .mcard dd { font-size: 16px; line-height: 1.72; }
+.deck .more .mcard h3 { font-size: 21px; }
+.deck .more .mcard dl { row-gap: 18px; }
+.deck .learn { padding-top: 52px; }
+.deck .ln-title { margin: 96px 0 18px; font-size: 64px; }
+.deck .lrn { padding: 28px 0; }
+.deck .lrn p { font-size: 21px; }
+.deck .pair { padding-top: 52px; }
+.deck .half-img { height: 188px; }
+.deck .pair .hb p { font-size: 15.5px; }
+.deck .pair .half-head h3 { font-size: 24px; }
+.deck .pair .half { gap: 14px; }
+.deck .pair .formula, .deck .pair .steps { margin-top: 10px; }
+.deck .pair .fx { font-size: 19px; }
+.deck .pair .fx-row { font-size: 15px; }
+.deck .pair .steps span { font-size: 14px; padding: 11px 12px; }
+.deck .pair-grid { margin-top: 0; }
+.deck .thanks { display: flex; flex-direction: column; justify-content: center; }
+
+/* =========================================================== WEB (responsive scroll) */
+.web { background: var(--bg); color: var(--fg); }
+.web .topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 14px; padding-left: max(16px, env(safe-area-inset-left, 0px), calc((100% - 1200px) / 2)); padding-right: max(16px, env(safe-area-inset-right, 0px), calc((100% - 1200px) / 2)); background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.web .tb-name { font-weight: 800; font-size: 16px; white-space: nowrap; }
+.web .tb-name span { font-weight: 600; color: var(--muted); font-size: 13px; margin-left: 6px; }
+.web .topbar nav { display: flex; gap: 18px; font-size: 14px; font-weight: 600; color: var(--muted); overflow-x: auto; }
+.web .topbar nav a:hover { color: var(--fg); }
+.web .page { padding-block: 84px; padding-left: max(16px, env(safe-area-inset-left, 0px), calc((100% - 1200px) / 2)); padding-right: max(16px, env(safe-area-inset-right, 0px), calc((100% - 1200px) / 2)); border-bottom: 1px solid var(--line); }
+.web .page.dark { border-bottom-color: #222; }
+.web .foot, .web .tabs { display: none; }
+.web .eyebrow { margin-bottom: 14px; }
+.web .t-head { margin-bottom: 30px; }
+.web .t-title { font-size: clamp(26px, 3.2vw, 38px); }
+.web .tr-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: 52px; align-items: start; }
+.web .tr-side { display: flex; flex-direction: column; gap: 14px; }
+.web .side-img { aspect-ratio: 16 / 9; }
+.web .side-img.contain { aspect-ratio: auto; }
+.web .side-img.contain img { height: auto; }
+.web .cover { padding-block: 120px 72px; display: flex; flex-direction: column; justify-content: center; gap: 0; }
+.web .thanks { border-bottom: none; }
+.web .cv-title { font-size: clamp(64px, 15vw, 220px); }
+.web .cv-eyebrow { font-size: clamp(14px, 1.6vw, 22px); }
+.web .cv-bottom { margin-top: 64px; flex-wrap: wrap; gap: 16px; }
+.web .cv-contact { font-size: clamp(14px, 1.4vw, 18px); gap: 16px 26px; }
+.web .ab-title { font-size: clamp(30px, 4.4vw, 48px); }
+.web .ab-lead { font-size: clamp(16px, 1.5vw, 19px); }
+.web .in-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 48px; margin-top: 24px; align-items: center; }
+.web .in-title { font-size: clamp(48px, 7vw, 92px); }
+.web .in-img { aspect-ratio: 4 / 3; }
+.web .in-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 48px; }
+.web .meta-l { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 28px; }
+.web .meta-l > div:last-child { grid-column: 1 / -1; }
+.web .g-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 16px; }
+.web .g-item { aspect-ratio: 16 / 9; }
+.web .ar-grid { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.4fr); gap: 44px; align-items: start; }
+.web .ct-row { grid-template-columns: 90px minmax(0, 1fr) minmax(0, 360px); }
+.web .ct-thumb { height: 170px; }
+.web .ln-title { font-size: clamp(36px, 5vw, 56px); margin-bottom: 8px; }
+.web .half-img { aspect-ratio: 16 / 9; }
+.web .thanks { padding-top: 120px; padding-bottom: 120px; }
+.web .th-title { font-size: clamp(56px, 10vw, 120px); }
+.web .th-lead { font-size: clamp(16px, 1.8vw, 21px); }
+.web .th-lead br { display: none; }
+
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 11; background: var(--bg); }
+.web .tr-text, .web .tr-side, .web .ar-points, .web .ar-diag, .web .half, .web .ct-body, .web .in-grid > div { min-width: 0; }
+.web .diag-scroll { overflow-x: auto; }
+.web .page .t-title, .web .ab-title, .web .in-title, .web .ln-title, .web .th-title { text-wrap: balance; }
+@media (max-width: 960px) {
+  .web .tr-grid, .web .ar-grid, .web .in-grid, .web .in-meta, .web .pair-grid, .web .lrn-grid { grid-template-columns: minmax(0, 1fr); }
+  .web .cards3 { grid-template-columns: minmax(0, 1fr); }
+  .web .g-grid { grid-template-columns: minmax(0, 1fr); }
+  .web .ct-row { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .web .ct-num { font-size: 40px; }
+  .web .lrn-grid { column-gap: 0; }
+  .web .pair-grid { gap: 64px; }
+}
+@media (max-width: 600px) {
+  .web .page { padding-top: 56px; padding-bottom: 56px; }
+  .web .topbar nav { display: none; }
+  .web .meta-l { grid-template-columns: minmax(0, 1fr); }
+  .web .metrics { grid-template-columns: minmax(0, 1fr); }
+  .web .blk p, .web .lrn p { font-size: 15.5px; }
+  .web .half-head { flex-direction: column; align-items: flex-start; }
+  .web .cv-bottom { flex-direction: column; align-items: flex-start; }
+  .web .diag-scroll .diagram.arch { min-width: 720px; }
+  .web .next { flex-direction: column; gap: 6px; }
+  .web .example { flex-direction: column; gap: 4px; }
+}
+@media (max-width: 520px) { .web .cmp, .web .metrics.m3 { grid-template-columns: minmax(0, 1fr); } }
+</style>
+</head>
+<body>
+<div class="web"><header class="topbar"><a href="#top" class="tb-name">한광훈 <span>Game Client Programmer</span></a>
+<nav><a href="#about">About</a><a href="#festa">Festa Fiesta!</a><a href="#leftbehind">LEFT BEHIND</a><a href="#contact">Contact</a></nav></header><main><section class="page dark cover" id="top">
+<p class="cv-eyebrow">GAME CLIENT PROGRAMMER · UNREAL C++</p>
+<h1 class="cv-title">PORTFOLIO</h1>
+<div class="cv-bottom">
+  <span class="cv-name">한광훈</span>
+  <span class="cv-contact"><span>kpo9101@gmail.com</span><a href="https://github.com/kpo9101" target="_blank" rel="noopener">github.com/kpo9101</a></span>
+</div></section>
+<section class="page dark about" id="about">
+<p class="eyebrow">ABOUT ME</p>
+<h2 class="ab-title">복잡한 시스템을 모듈로 나누고,<br>테스트로 증명합니다</h2>
+<p class="ab-lead">Festa Fiesta!에서는 시설 배치 엔진을 플러그인으로 설계해 임의 각도 회전, 묶음 편집·실행 취소, NavMesh 접근점 보정, Shipping 패키징 안정화를 맡았습니다. LEFT BEHIND에서는 EOS 세션과 서버 권한 판정으로 멀티플레이 진입과 전투 흐름을 안정화했습니다.</p>
+<p class="mini-h">SKILLS</p>
+<div class="chips"><span class="chip">Unreal Engine 5</span><span class="chip">C++</span><span class="chip">Blueprint</span><span class="chip">GAS</span><span class="chip">EOS · Online Subsystem</span><span class="chip">Navigation</span><span class="chip">UMG · CommonUI</span><span class="chip">Automation Test</span><span class="chip">Python · PowerShell</span><span class="chip">Git · Git LFS</span></div>
+<p class="mini-h">PROFICIENCY</p>
+<div class="cards3">
+  <div class="pcard"><h3>게임 수학으로 배치 판정을 설계합니다</h3><p>AABB 1차 필터와 OBB·SAT 정밀 판정을 나눠 임의 각도 회전 배치의 겹침 오탐을 없앴습니다. 회전값은 정수(0.01도)로 저장해 판정을 결정적으로 유지했습니다.</p><small>Festa Fiesta! · 45도 회전 회귀 테스트 기준 오탐 0건</small></div>
+  <div class="pcard"><h3>상태 변경은 전부 성공하거나 전부 되돌립니다</h3><p>묶음 편집은 새 상태를 먼저 준비한 뒤 확정하고, 실패하면 시설과 비용 정책을 역순으로 복구합니다. 멀티플레이 판정은 서버 권한·서버 시각으로 일원화했습니다.</p><small>건축 편집 테스트 174개 통과 · LEFT BEHIND 서버 타이머</small></div>
+  <div class="pcard"><h3>실제 빌드에서 돌아가는지까지 확인합니다</h3><p>Cook 후에만 생기는 좌표 변형과 NavMesh 왜곡을 원인부터 추적하고, 빌드 무결성 검사와 자동화 테스트로 배포본을 검증했습니다.</p><small>Cook 전후 Zone 13개 좌표 오차 0 · 배포 파일 100개 해시 일치</small></div>
+</div>
+<div class="foot"><span>한광훈 · PROFILE</span><span>02</span></div></section>
+<section class="page light contents">
+<p class="eyebrow">CONTENTS</p>
+<div class="ct-list">
+  <a class="ct-row" href="#festa">
+    <span class="ct-num">01</span>
+    <div class="ct-body"><h3>Festa Fiesta!</h3><p>축제 건설·경영 시뮬레이션 · 7인 · 2026.08 ~ 2026.10 · UE 5.7.4 / C++</p>
+      <ul><li>건축 플러그인 아키텍처</li><li>OBB·SAT 임의 각도 회전 배치</li><li>지면 판정 오탐 수정</li><li>묶음 편집·실행 취소</li><li>군중 AI 접근점 자동 보정</li><li>Win64 Shipping 패키징 안정화</li><li>시설 조합 미리보기</li></ul></div>
+    <figure class="ct-thumb"><img src="img/ff_banner.jpg" alt="Festa Fiesta! 키 아트" loading="lazy"></figure>
+  </a>
+  <a class="ct-row" href="#leftbehind">
+    <span class="ct-num">02</span>
+    <div class="ct-body"><h3>LEFT BEHIND</h3><p>EOS 협동 보스 레이드 액션 RPG · 5인 · 2026.06 ~ 2026.07 · UE 5.7.4 / C++ / GAS</p>
+      <ul><li>레이드 시작 준비 Barrier</li><li>서버 타이머 연사 판정</li><li>역할 편향 없는 MVP 산식</li><li>오버킬·오버힐 제외 집계</li><li>EOS 세션·초대·방 관리</li></ul></div>
+    <figure class="ct-thumb"><img src="img/lb_title.jpg" alt="LEFT BEHIND 타이틀 화면" loading="lazy"></figure>
+  </a>
+</div>
+<div class="foot"><span>한광훈 · CONTENTS</span><span>03</span></div></section>
+<section class="page dark intro" id="festa">
+<div class="in-num"><span>01</span><i></i></div>
+<div class="in-grid">
+  <div>
+    <h2 class="in-title">Festa Fiesta!</h2>
+    <p class="in-desc">부산 다대포 해변에 축제장을 짓고 운영하는 싱글 플레이 건설·경영 시뮬레이션입니다. 시설의 위치와 운영 방식에 따라 방문객의 움직임이 달라집니다. 저는 시설이 놓이는 모든 순간 — 배치 판정, 회전, 편집, 실행 취소 — 과 그 결과가 군중 AI 경로와 패키징 빌드까지 올바르게 이어지도록 만드는 일을 맡았습니다.</p>
+    <div class="pills"><a class="pill pill-dark" href="https://youtu.be/olpAoV4WH7Y" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 00-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 001 7.2 31 31 0 00.5 12a31 31 0 00.5 4.8 3 3 0 002.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 002.1-2.1 31 31 0 00.5-4.8 31 31 0 00-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg><span>시연 영상</span></a><a class="pill pill-dark" href="https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a><a class="pill pill-dark" href="https://teamsparta.notion.site/8-13-Festa-Fiesta-3b12dc3ef514808a9247c952c9ecf639" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 2h9l5 5v15H6zM14 2v6h6M9 13h8M9 17h8"/></svg><span>프로젝트 브로셔</span></a></div>
+  </div>
+  <figure class="shot in-img"><img src="img/ff_cover.jpg" alt="Festa Fiesta! 커버 아트" loading="lazy"></figure>
+</div>
+<div class="in-meta">
+  <div class="meta-l">
+    <div><h5>기간</h5><p>2026.08 ~ 2026.10 (3개월)</p></div>
+    <div><h5>팀 구성</h5><p>7인 · 레벨·시설 시스템 개발 / 패키징 매니저</p></div>
+    <div><h5>개발 환경</h5><p>UE 5.7.4 · C++ · Blueprint · CommonUI · Navigation · Win64</p></div>
+  </div>
+  <div class="meta-r"><h5>담당 역할</h5><ul>
+    <li>FF_ZoneSystem · FF_ZoneAuthoring 플러그인 설계</li>
+    <li>시설 배치·회전 기하 엔진, 묶음 편집·실행 취소</li>
+    <li>존 접근점 자동 보정, 건축 모드 UI</li>
+    <li>Win64 Shipping 패키징 안정화·자동 검증</li></ul></div>
+</div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>04</span></div></section>
+<section class="page light gallery">
+<nav class="tabs" aria-hidden="true"><span class="on">OVERVIEW</span><span class="">ARCHITECTURE</span><span class="">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · OVERVIEW</p>
+<div class="t-head"><h2 class="t-title">건축 모드 — 제가 만든 시스템이 보이는 화면</h2><a class="pill" href="https://youtu.be/olpAoV4WH7Y" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 00-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 001 7.2 31 31 0 00.5 12a31 31 0 00.5 4.8 3 3 0 002.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 002.1-2.1 31 31 0 00.5-4.8 31 31 0 00-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg><span>시연 영상</span></a></div>
+<div class="g-grid">
+  <figure class="g-item g-a"><img src="img/ff_preview.jpg" alt="시설 배치 미리보기 화면"  loading="lazy"><figcaption><b>배치 미리보기</b> 시설 본체·대기열·관객석 범위와 필요한 공간을 설치 전에 보여 줍니다.</figcaption></figure>
+  <figure class="g-item g-b"><img src="img/ff_catalog.jpg" alt="건축 모드 시설 카탈로그"  loading="lazy"><figcaption><b>시설 카탈로그</b> 카테고리·비용·필수 시설을 한 화면에서 고르는 건축 모드 UI</figcaption></figure>
+  <figure class="g-item g-c"><img src="img/ff_facilities.jpg" alt="시설 아트 카탈로그"  loading="lazy"><figcaption><b>시설 데이터</b> 시설마다 크기·대기열·관객석 규칙을 데이터로 정의해 같은 판정 경로로 검사</figcaption></figure>
+  <figure class="g-item g-d"><img src="img/ff_map.jpg" alt="다대포 축제장 전경"  loading="lazy"><figcaption><b>다대포 축제장</b> 구역(Zone) 단위로 건축 가능 영역을 나눈 실제 맵</figcaption></figure>
+</div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>05</span></div></section>
+<section class="page light arch-page">
+<nav class="tabs" aria-hidden="true"><span class="">OVERVIEW</span><span class="on">ARCHITECTURE</span><span class="">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · ARCHITECTURE</p>
+<div class="t-head"><h2 class="t-title">확장 가능한 건축 플러그인 구조</h2><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/ca961f8b" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>플러그인 추가 커밋</span></a></div>
+<div class="ar-grid">
+  <div class="ar-points">
+    <div class="pt"><span>1</span><div><h4>최종 판정은 한 곳에서</h4><p>건축 화면·제작 도구·미리보기 모두 UFFZSWorldSubsystem의 공통 명령 경로로 설치 가능 여부를 판단합니다.</p></div></div>
+    <div class="pt"><span>2</span><div><h4>추가 규칙은 인터페이스로</h4><p>비용·강화·구획 잠금이 IFFZSExternalPolicy의 사전검사 → 임시적용 → 확정/복구 약속에 참여해, 코어가 개별 게임 규칙을 몰라도 됩니다.</p></div></div>
+    <div class="pt"><span>3</span><div><h4>기존 코드를 고치지 않고 확장</h4><p>구역 제작 기능은 새 플러그인(FF_ZoneAuthoring)으로 얹고, 두 플러그인 모두 Runtime·Editor 모듈을 분리했습니다.</p></div></div>
+    <div class="code code-xs"><div class="code-head"><span>FFZALayerPolicy.cpp</span></div><pre><span class="c-com">// ApplyTentativeFFZoneSystemChange_Implementation</span>
+<span class="c-com">// 사전 검증과 실제 적용 사이에 구획이 잠길 수 있으므로 같은 판정을 한 번 더 한다.</span>
+<span class="c-kw">const</span> <span class="c-ty">UFFZAZoneAuthoringSubsystem</span>* <span class="c-id">Subsystem</span> = <span class="c-id">Owner</span>.<span class="c-fn">Get</span>();
+<span class="c-kw">return</span> <span class="c-id">Subsystem</span> ? <span class="c-id">Subsystem</span>-&gt;<span class="c-fn">EvaluatePlacement</span>(<span class="c-id">Context</span>) : <span class="c-fn">FFFZSPolicyDecision</span>();</pre></div>
+  </div>
+  <div class="ar-diag diag-scroll"><svg class="diagram arch" viewBox="0 0 1000 640" role="img" aria-label="Festa Fiesta 건축 플러그인 클래스 구조"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" class="ar-h"/></marker></defs><rect x="0" y="0" width="1000" height="640" rx="18" class="sv-bg"/><rect x="18" y="18" width="964" height="190" rx="12" class="mod"/><text x="34" y="40" class="mod-t">FestaFiesta · 게임 모듈</text><rect x="18" y="262" width="548" height="330" rx="12" class="mod"/><text x="34" y="284" class="mod-t">FF_ZoneSystem · 배치 코어 플러그인</text><rect x="584" y="262" width="398" height="330" rx="12" class="mod"/><text x="600" y="284" class="mod-t">FF_ZoneAuthoring · 구역 제작 플러그인</text><g class="bx-s"><rect x="40" y="58" width="168" height="24" class="bx-tab"/><text x="48" y="75" class="bx-tag">UFF_BuildModeSubsystem</text><rect x="40" y="82" width="200" height="104" class="bx-body"/><text x="54" y="116" class="bx-title">건축 모드</text><text x="54" y="142" class="bx-desc">선택·위치·회전 입력</text><text x="54" y="161" class="bx-desc">편집 명령 생성</text></g><g class="bx-s"><rect x="270" y="58" width="175" height="24" class="bx-tab"/><text x="278" y="75" class="bx-tag">UFF_FacilitySynergySub…</text><rect x="270" y="82" width="200" height="104" class="bx-body"/><text x="284" y="116" class="bx-title">시설 조합</text><text x="284" y="142" class="bx-desc">배치 전 효과 미리보기</text><text x="284" y="161" class="bx-desc">공통 평가기 보관</text></g><g class="bx-s"><rect x="500" y="58" width="168" height="24" class="bx-tab"/><text x="508" y="75" class="bx-tag">UFF_ZoneSystemEconomy…</text><rect x="500" y="82" width="200" height="104" class="bx-body"/><text x="514" y="116" class="bx-title">비용 연결</text><text x="514" y="142" class="bx-desc">설치비·환급을</text><text x="514" y="161" class="bx-desc">작업 기록에 연결</text></g><g class="bx-w"><rect x="762" y="58" width="182" height="24" class="bx-tab"/><text x="770" y="75" class="bx-tag">UFF_FestivalProgression…</text><rect x="762" y="82" width="200" height="104" class="bx-body"/><text x="776" y="116" class="bx-title">축제 자금·평가</text><text x="776" y="142" class="bx-desc">자금 장부·평가</text><text x="776" y="161" class="bx-desc">(팀원 담당)</text></g><g class="bx-s"><rect x="40" y="306" width="147" height="24" class="bx-tab"/><text x="48" y="323" class="bx-tag">UFFZSWorldSubsystem</text><rect x="40" y="330" width="220" height="108" class="bx-body"/><text x="54" y="364" class="bx-title">배치 판정 코어</text><text x="54" y="390" class="bx-desc">공간 검사·명령 실행</text><text x="54" y="409" class="bx-desc">작업 이력(Undo/Redo)</text></g><g class="bx-s bx-i"><rect x="322" y="306" width="147" height="24" class="bx-tab"/><text x="330" y="323" class="bx-tag">IFFZSExternalPolicy</text><rect x="322" y="330" width="222" height="108" class="bx-body"/><text x="336" y="364" class="bx-title">정책 인터페이스</text><text x="336" y="390" class="bx-desc">사전검사 → 임시적용</text><text x="336" y="409" class="bx-desc">→ 확정 / 역순 복구</text></g><g class="bx-s"><rect x="40" y="458" width="140" height="24" class="bx-tab"/><text x="48" y="475" class="bx-tag">AFFZSFacilityActor</text><rect x="40" y="482" width="220" height="92" class="bx-body"/><text x="54" y="516" class="bx-title">시설</text><text x="54" y="542" class="bx-desc">사양·점유 영역·강화 상태</text></g><g class="bx-s"><rect x="322" y="458" width="133" height="24" class="bx-tab"/><text x="330" y="475" class="bx-tag">AFFZSGameplayZone</text><rect x="322" y="482" width="222" height="92" class="bx-body"/><text x="336" y="516" class="bx-title">구역</text><text x="336" y="542" class="bx-desc">경계 폴리곤·데이터 검증</text></g><g class="bx-s"><rect x="604" y="306" width="126" height="24" class="bx-tab"/><text x="612" y="323" class="bx-tag">UFFZALayerPolicy</text><rect x="604" y="330" width="160" height="108" class="bx-body"/><text x="618" y="364" class="bx-title">구획 규칙</text><text x="618" y="390" class="bx-desc">잠금·허용 시설</text><text x="618" y="409" class="bx-desc">코어에 연결</text></g><g class="bx-s"><rect x="806" y="306" width="147" height="24" class="bx-tab"/><text x="814" y="323" class="bx-tag">UFFZAZoneAuthoring…</text><rect x="806" y="330" width="160" height="108" class="bx-body"/><text x="820" y="364" class="bx-title">구역 제작</text><text x="820" y="390" class="bx-desc">EvaluatePlacement</text><text x="820" y="409" class="bx-desc">구획 판정</text></g><g class="bx-s"><rect x="604" y="458" width="133" height="24" class="bx-tab"/><text x="612" y="475" class="bx-tag">AFFZAAuthoredZone</text><rect x="604" y="482" width="160" height="92" class="bx-body"/><text x="618" y="516" class="bx-title">제작 구역</text><text x="618" y="542" class="bx-desc">정의 적용·실시간 검증</text></g><g class="bx-s"><rect x="806" y="458" width="147" height="24" class="bx-tab"/><text x="814" y="475" class="bx-tag">UFFZAZoneDefinition</text><rect x="806" y="482" width="160" height="92" class="bx-body"/><text x="820" y="516" class="bx-title">구역 정의</text><text x="820" y="542" class="bx-desc">구역 설정 데이터 에셋</text></g><line x1="140" y1="186" x2="140" y2="302" class="ar" marker-end="url(#ah)"/><text x="148" y="246" text-anchor="start" class="ar-t">배치 요청·편집 명령</text><line x1="330" y1="186" x2="230" y2="302" class="ar" marker-end="url(#ah)"/><text x="300" y="236" text-anchor="start" class="ar-t">상태 조회·변경 구독</text><line x1="600" y1="186" x2="470" y2="302" class="ar" marker-end="url(#ah)"/><text x="556" y="236" text-anchor="start" class="ar-t">비용 규칙 구현</text><line x1="700" y1="134" x2="758" y2="134" class="ar" marker-end="url(#ah)"/><text x="729" y="124" text-anchor="middle" class="ar-t">자금 반영</text><line x1="260" y1="384" x2="318" y2="384" class="ar" marker-end="url(#ah)"/><text x="289" y="374" text-anchor="middle" class="ar-t">규칙 검사</text><line x1="150" y1="438" x2="150" y2="454" class="ar" marker-end="url(#ah)"/><line x1="240" y1="438" x2="330" y2="454" class="ar" marker-end="url(#ah)"/><line x1="604" y1="384" x2="548" y2="384" class="ar" marker-end="url(#ah)"/><text x="576" y="374" text-anchor="middle" class="ar-t">구현</text><line x1="604" y1="528" x2="548" y2="528" class="ar" marker-end="url(#ah)"/><text x="576" y="518" text-anchor="middle" class="ar-t">상속</text><line x1="764" y1="384" x2="802" y2="384" class="ar" marker-end="url(#ah)"/><line x1="764" y1="528" x2="802" y2="528" class="ar" marker-end="url(#ah)"/><rect x="760" y="606" width="16" height="16" class="lg-s"/><text x="782" y="619" class="lg-t">담당 구현</text><rect x="862" y="606" width="16" height="16" class="lg-w"/><text x="884" y="619" class="lg-t">팀원 구현</text><text x="24" y="619" class="lg-t">점선 화살표 = 호출·의존 / 구현 / 상속 (핵심 관계만 표시)</text></svg></div>
+</div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>06</span></div></section>
+<section class="page light trouble ">
+<nav class="tabs" aria-hidden="true"><span class="">OVERVIEW</span><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · TROUBLESHOOTING 01</p>
+<div class="t-head"><h2 class="t-title">90도 회전의 한계를 OBB·SAT 판정으로 풀었습니다</h2><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/5ed9401" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div>
+<div class="tr-grid"><div class="tr-text"><div class="blk"><h4><b>01</b> 문제</h4><p>시설을 90도 단위로만 돌릴 수 있어 해변 곡선을 따라 비스듬히 놓을 수 없었습니다. 배치 영역을 축정렬 사각형(AABB)으로만 판정해, 45도로 돌린 시설끼리는 실제로 떨어져 있어도 겹친다고 오판했습니다.</p></div><div class="blk"><h4><b>02</b> 해결</h4><p>OBB 기하 연산을 별도 모듈로 분리하고 AABB로 후보를 거른 뒤 SAT로 정밀 판정했습니다. 회전값은 정수 1/100도로 저장하고 90도 각도는 격자에 맞게 스냅했습니다. NavMesh는 DynamicModifiersOnly와 NavArea_Null modifier만 갱신해 회전 배치의 비용 범위를 제한했습니다.</p></div><div class="blk"><h4><b>03</b> 결과</h4><p>임의 각도(0.01도 단위) 배치를 지원하고, 기존·신규 판정 등가성 회귀 테스트와 45도 오탐 테스트에서 <em>오탐 0건</em>을 확인했습니다.</p></div></div><div class="tr-side"><svg class="diagram sat" viewBox="0 0 640 280" role="img" aria-label="AABB 판정과 OBB·SAT 판정 비교"><rect x="0" y="0" width="640" height="280" rx="16" class="sv-bg"/><g transform="translate(0,0)"><text x="20" y="26" class="sv-h">기존 · AABB 판정</text><rect x="114.0" y="54.0" width="116.0" height="116.0" class="sv-aabb"/><rect x="73.0" y="95.0" width="116.0" height="116.0" class="sv-aabb"/><rect x="114.0" y="95.0" width="75.0" height="75.0" class="sv-hit"/><polygon points="142.3,54.0 230.0,141.7 201.7,170.0 114.0,82.3" class="sv-ghost"/><polygon points="101.3,95.0 189.0,182.7 160.7,211.0 73.0,123.3" class="sv-ghost"/><text x="20" y="262" class="sv-bad">✕ 사각 영역이 겹쳐 설치 거절 (오탐)</text></g><line x1="320" y1="20" x2="320" y2="260" class="sv-div"/><g transform="translate(320,0)"><text x="20" y="26" class="sv-h">변경 · OBB + SAT</text><line x1="61.0" y1="42.0" x2="242.0" y2="223.0" class="sv-axis"/><polygon points="142.3,54.0 230.0,141.7 201.7,170.0 114.0,82.3" class="sv-obb"/><polygon points="101.3,95.0 189.0,182.7 160.7,211.0 73.0,123.3" class="sv-obb2"/><text x="236.0" y="241.0" class="sv-t" text-anchor="end">분리축</text><text x="20" y="262" class="sv-ok">✓ 분리축이 있으면 겹치지 않음 → 설치 허용</text></g></svg><div class="code code-sm"><div class="code-head"><span>FF_FFZSOrientedGeometry.cpp</span></div><pre><span class="c-kw">double</span> <span class="c-fn">NormalizeYawDegrees</span>(<span class="c-kw">const</span> <span class="c-kw">double</span> <span class="c-id">YawDegrees</span>)
+{
+    <span class="c-kw">double</span> <span class="c-id">Result</span> = <span class="c-ty">FMath</span>::<span class="c-fn">Fmod</span>(<span class="c-id">YawDegrees</span>, <span class="c-num">360.0</span>);
+    <span class="c-kw">if</span> (<span class="c-id">Result</span> &lt; -<span class="c-num">180.0</span>) { <span class="c-id">Result</span> += <span class="c-num">360.0</span>; }
+    <span class="c-kw">else</span> <span class="c-kw">if</span> (<span class="c-id">Result</span> &gt;= <span class="c-num">180.0</span>) { <span class="c-id">Result</span> -= <span class="c-num">360.0</span>; }
+    <span class="c-kw">return</span> <span class="c-id">Result</span>;
+}</pre></div></div></div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>07</span></div></section>
+<section class="page light trouble ">
+<nav class="tabs" aria-hidden="true"><span class="">OVERVIEW</span><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · TROUBLESHOOTING 02</p>
+<div class="t-head"><h2 class="t-title">빈 땅인데 설치가 막히던 원인을 찾아 고쳤습니다</h2><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/d3ca8507" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div>
+<div class="tr-grid"><div class="tr-text"><div class="blk"><h4><b>01</b> 문제</h4><p>메인 공연장 후보 위치에서 빈 잔디가 장애물로 판정돼 설치가 거절됐습니다. 일반 시설은 지면 검사 결과를 충돌 검사에 넘기지 않아, 평균 바닥보다 조금 높은 땅을 장애물로 오인했습니다.</p></div><div class="blk"><h4><b>02</b> 해결</h4><p>검증된 지면 정보(FFFZSPlacementGroundSupport)를 충돌 검사에 전달하고, 건물에서 떨어진 대기열·관객석은 지면을 따로 검사했습니다. 실패하면 지면 문제와 실제 장애물을 구분해 이유·위치·가까운 빈자리를 안내합니다.</p></div><div class="blk"><h4><b>03</b> 결과</h4><p>같은 후보 위치에서 설치 확정이 활성화됐고, 실제 나무와 겹칠 때의 차단은 유지됐습니다. 관련 자동 검사 <em>61개</em>가 경고·실패 없이 통과했습니다.</p></div></div><div class="tr-side"><figure class="shot side-img short"><img src="img/ff_collision.jpg" alt="설치 불가 이유를 안내하는 배치 실패 화면" loading="lazy"></figure><div class="code code-xs"><div class="code-head"><span>FF_FFZSWorldSubsystem.cpp</span></div><pre><span class="c-kw">if</span> (<span class="c-id">Failure</span> != <span class="c-ty">EFFZSPlacementFailure</span>::<span class="c-id">PlacementCollision</span>)
+{
+    <span class="c-com">// Audience and queue regions have their own terrain. A footprint&#x27;s proof</span>
+    <span class="c-com">// must not exempt a distant slope, missing ground, or unrelated surface.</span>
+    <span class="c-ty">FFFZSPlacementValidation</span> <span class="c-id">SurfaceValidation</span>;
+    <span class="c-id">SurfaceValidation</span>.<span class="c-id">PlacementTransform</span> = <span class="c-id">InOutValidation</span>.<span class="c-id">PlacementTransform</span>;
+    <span class="c-id">SurfaceValidation</span>.<span class="c-id">FootprintOrientedRects</span>.<span class="c-fn">Add</span>(<span class="c-id">LocalRegion</span>);
+    <span class="c-fn">ValidateGround</span>(<span class="c-id">Zone</span>, <span class="c-id">Spec</span>, <span class="c-id">IgnoreFacility</span>, <span class="c-id">SurfaceValidation</span>, &amp;<span class="c-id">ReservationSupport</span>);
+    <span class="c-com">// … 이하 3줄 생략</span>
+}</pre></div></div></div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>08</span></div></section>
+<section class="page light trouble ">
+<nav class="tabs" aria-hidden="true"><span class="">OVERVIEW</span><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · TROUBLESHOOTING 03</p>
+<div class="t-head"><h2 class="t-title">묶음 편집과 실행 취소를 비용까지 함께 되돌렸습니다</h2></div>
+<div class="tr-grid"><div class="tr-text"><div class="blk"><h4><b>01</b> 문제</h4><p>먹거리 거리처럼 여러 시설로 만든 구성을 하나씩 다시 옮겨야 했습니다. 묶음 중 일부만 적용되거나, 시설만 되돌리고 비용은 그대로 남는 불일치 위험이 있었습니다.</p></div><div class="blk"><h4><b>02</b> 해결</h4><p>상대 위치를 유지한 이동·회전·복사 명령을 만들고, 새 상태를 모두 준비한 뒤 한 번에 확정했습니다. 하나라도 등록에 실패하면 임시 시설을 해제하고 원본과 비용 정책을 역순으로 복구합니다.</p></div><div class="blk"><h4><b>03</b> 결과</h4><p>실행 취소·다시 실행과 배치 설계도 저장·재사용을 구현했고, 부분 실패·반복 실행 취소·비용 보존 시나리오를 다룬 자동화 테스트 <em>174개</em>가 통과했습니다(실패 0).</p></div></div><div class="tr-side"><div class="flow">
+  <div class="fl-row"><span>새 상태 준비</span><i>→</i><span>공간·비용 검사</span><i>→</i><span>정책 임시 적용</span><i>→</i><span>시설 등록</span><i>→</i><span class="fl-ok">전체 확정·알림</span></div>
+  <div class="fl-back">하나라도 실패하면 → 임시 시설 해제 · 원본 재등록 · 정책을 <b>역순</b>으로 Rollback</div>
+  <div class="fl-undo"><b>실행 취소</b> 현재 가격이 아닌 <u>작업 당시 지불·환급 기록</u>을 반대로 적용 · 최근 64개 작업 보관</div>
+</div><div class="code code-sm"><div class="code-head"><span>FF_FFZSWorldSubsystem_ConstructionHistory.cpp</span></div><pre><span class="c-kw">bool</span> bRegistered = <span class="c-kw">true</span>;
+<span class="c-kw">for</span> (<span class="c-kw">auto</span>&amp; <span class="c-id">Pair</span> : <span class="c-id">Staged</span>) <span class="c-kw">if</span> (!<span class="c-fn">RegisterFacility</span>(<span class="c-id">Pair</span>.<span class="c-id">Value</span>)) { bRegistered = <span class="c-kw">false</span>; <span class="c-kw">break</span>; }
+<span class="c-kw">if</span> (!bRegistered)
+{
+    <span class="c-kw">for</span> (<span class="c-kw">auto</span>&amp; <span class="c-id">Pair</span> : <span class="c-id">Staged</span>) <span class="c-fn">UnregisterFacility</span>(<span class="c-id">Pair</span>.<span class="c-id">Value</span>);
+    <span class="c-kw">for</span> (<span class="c-kw">auto</span>&amp; <span class="c-id">Pair</span> : <span class="c-id">Originals</span>) <span class="c-fn">ensure</span>(<span class="c-fn">RegisterFacility</span>(<span class="c-id">Pair</span>.<span class="c-id">Value</span>));
+    <span class="c-kw">for</span> (<span class="c-kw">int32</span> <span class="c-id">Index</span> = <span class="c-id">Contexts</span>.<span class="c-fn">Num</span>() - <span class="c-num">1</span>; <span class="c-id">Index</span> &gt;= <span class="c-num">0</span>; --<span class="c-id">Index</span>) <span class="c-fn">RollbackPolicies</span>(<span class="c-id">Contexts</span>[<span class="c-id">Index</span>], <span class="c-id">Policies</span>[<span class="c-id">Index</span>]);
+    <span class="c-fn">DestroyStaged</span>();
+    <span class="c-kw">return</span> <span class="c-fn">MakeFailure</span>(<span class="c-ty">EFFZSPlacementFailure</span>::<span class="c-id">InternalError</span>, <span class="c-fn">LOCTEXT</span>(<span class="c-str">&quot;BatchRegister&quot;</span>, <span class="c-str">&quot;그룹 등록에 실패하여 원래 배치를 복구했습니다.&quot;</span>));
+}</pre></div></div></div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>09</span></div></section>
+<section class="page light trouble ">
+<nav class="tabs" aria-hidden="true"><span class="">OVERVIEW</span><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · TROUBLESHOOTING 04</p>
+<div class="t-head"><h2 class="t-title">지형을 고치지 않고 군중 AI의 길을 되찾았습니다</h2></div>
+<div class="tr-grid"><div class="tr-text"><div class="blk"><h4><b>01</b> 문제</h4><p>Test_Main 지형은 45~582cm 단차 슬래브가 이어진 구조라 NavMesh가 단차마다 끊겼습니다. 구역 모서리 한 점을 대표 접근점으로 써서, 걸어갈 수 있는 구역도 도달 불가로 판정됐습니다.</p></div><div class="blk"><h4><b>02</b> 해결</h4><p>게임·PIE 월드에서만 생성되는 WorldSubsystem을 만들어 에디터 레벨을 건드리지 않았습니다. 접근점이 없는 구역만 골라 경계 내부를 반감 격자로 샘플링하고, ProjectPointToNavigation·GetPathLength로 실제 경로가 있는 점을 주입했습니다.</p></div><div class="blk"><h4><b>03</b> 결과</h4><p>첫 AI 결정 전(OnWorldBeginPlay)에 보정을 끝내고, 보정할 수 없는 구역은 좌표와 함께 보고합니다.</p></div></div><div class="tr-side"><svg class="diagram" viewBox="0 0 640 342" role="img" aria-label="구역 접근점 자동 보정 개념도"><rect x="0" y="0" width="640" height="342" rx="16" class="sv-bg"/><rect x="70" y="46" width="170" height="226" class="sv-slab sv-slab0"/><text x="78" y="64" class="sv-t">슬래브 45cm</text><rect x="84" y="76" width="142" height="182" rx="10" class="sv-nav"/><rect x="250" y="46" width="170" height="226" class="sv-slab sv-slab1"/><text x="258" y="64" class="sv-t">슬래브 240cm</text><rect x="264" y="76" width="142" height="182" rx="10" class="sv-nav"/><rect x="430" y="46" width="170" height="226" class="sv-slab sv-slab2"/><text x="438" y="64" class="sv-t">슬래브 582cm</text><rect x="444" y="76" width="142" height="182" rx="10" class="sv-nav"/><rect x="70" y="46" width="530" height="226" class="sv-zone"/><circle cx="110" cy="96" r="3" class="sv-dot"/><circle cx="110" cy="148" r="3" class="sv-dot"/><circle cx="110" cy="200" r="3" class="sv-dot"/><circle cx="110" cy="252" r="3" class="sv-dot"/><circle cx="170" cy="96" r="3" class="sv-dot"/><circle cx="170" cy="148" r="3" class="sv-dot"/><circle cx="170" cy="200" r="3" class="sv-dot"/><circle cx="170" cy="252" r="3" class="sv-dot"/><circle cx="230" cy="96" r="3" class="sv-dot"/><circle cx="230" cy="148" r="3" class="sv-dot"/><circle cx="230" cy="200" r="3" class="sv-dot"/><circle cx="230" cy="252" r="3" class="sv-dot"/><circle cx="290" cy="96" r="3" class="sv-dot"/><circle cx="290" cy="148" r="3" class="sv-dot"/><circle cx="290" cy="200" r="3" class="sv-dot"/><circle cx="290" cy="252" r="3" class="sv-dot"/><circle cx="350" cy="96" r="3" class="sv-dot"/><circle cx="350" cy="148" r="3" class="sv-dot"/><circle cx="350" cy="200" r="3" class="sv-dot"/><circle cx="350" cy="252" r="3" class="sv-dot"/><circle cx="410" cy="96" r="3" class="sv-dot"/><circle cx="410" cy="148" r="3" class="sv-dot"/><circle cx="410" cy="200" r="3" class="sv-dot"/><circle cx="410" cy="252" r="3" class="sv-dot"/><circle cx="470" cy="96" r="3" class="sv-dot"/><circle cx="470" cy="148" r="3" class="sv-dot"/><circle cx="470" cy="200" r="3" class="sv-dot"/><circle cx="470" cy="252" r="3" class="sv-dot"/><circle cx="530" cy="96" r="3" class="sv-dot"/><circle cx="530" cy="148" r="3" class="sv-dot"/><circle cx="530" cy="200" r="3" class="sv-dot"/><circle cx="530" cy="252" r="3" class="sv-dot"/><circle cx="590" cy="96" r="3" class="sv-dot"/><circle cx="590" cy="148" r="3" class="sv-dot"/><circle cx="590" cy="200" r="3" class="sv-dot"/><circle cx="590" cy="252" r="3" class="sv-dot"/><circle cx="110" cy="122" r="2" class="sv-dot2"/><circle cx="110" cy="148" r="2" class="sv-dot2"/><circle cx="110" cy="174" r="2" class="sv-dot2"/><circle cx="110" cy="200" r="2" class="sv-dot2"/><circle cx="110" cy="226" r="2" class="sv-dot2"/><circle cx="140" cy="122" r="2" class="sv-dot2"/><circle cx="140" cy="148" r="2" class="sv-dot2"/><circle cx="140" cy="174" r="2" class="sv-dot2"/><circle cx="140" cy="200" r="2" class="sv-dot2"/><circle cx="140" cy="226" r="2" class="sv-dot2"/><circle cx="170" cy="122" r="2" class="sv-dot2"/><circle cx="170" cy="148" r="2" class="sv-dot2"/><circle cx="170" cy="174" r="2" class="sv-dot2"/><circle cx="170" cy="200" r="2" class="sv-dot2"/><circle cx="170" cy="226" r="2" class="sv-dot2"/><circle cx="200" cy="122" r="2" class="sv-dot2"/><circle cx="200" cy="148" r="2" class="sv-dot2"/><circle cx="200" cy="174" r="2" class="sv-dot2"/><circle cx="200" cy="200" r="2" class="sv-dot2"/><circle cx="200" cy="226" r="2" class="sv-dot2"/><g class="sv-badg"><line x1="592" y1="264" x2="608" y2="280"/><line x1="608" y1="264" x2="592" y2="280"/></g><text x="604" y="326" text-anchor="end" class="sv-bad">✕ 모서리 대표점 → 도달 불가로 오판</text><rect x="14" y="148" width="34" height="34" rx="8" class="sv-exit"/><text x="31" y="170" text-anchor="middle" class="sv-exitt">출구</text><path d="M48 165 C 80 165, 100 175, 140 174" class="sv-path"/><circle cx="140" cy="174" r="10" class="sv-anchor"/><path d="M135 174 l4 4 l7 -8" class="sv-check"/><text x="36" y="302" class="sv-ok">✓ 반감 격자로 샘플링 → 경로가 있는 점을 접근점으로 주입</text><text x="80" y="300" class="sv-t" text-anchor="end"></text></svg><div class="metrics"><div class="metric"><strong>65% → 100%</strong><span>출구 도달 가능 구역</span><small>유효 구역 전부 복구</small></div><div class="metric"><strong>14~16 → 0</strong><span>격자 정렬에 따른 결과 편차</span><small>앞 단계 표본을 뒤 단계가 포함</small></div></div></div></div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>10</span></div></section>
+<section class="page light trouble ">
+<nav class="tabs" aria-hidden="true"><span class="">OVERVIEW</span><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · TROUBLESHOOTING 05</p>
+<div class="t-head"><h2 class="t-title">에디터에선 정상, 패키지에선 틀어지던 원인을 찾았습니다</h2></div>
+<div class="tr-grid"><div class="tr-text"><div class="blk"><h4><b>01</b> 문제</h4><p>Win64 Shipping Cook 후 Zone 좌표가 에디터와 달라지고, 카메라 시작 높이와 군중 입구 지면 처리에 오류가 생겼습니다.</p></div><div class="blk"><h4><b>02</b> 해결</h4><p>런타임 Zone 13개가 에디터 전용 부모에 붙어 있어, Cook에서 부모가 제거되며 상대 위치만 남는 것을 확인했습니다. 월드 위치·회전·크기를 유지한 채 분리하고 부모 체인 검사를 추가했으며, 주차장 메시는 삼각형 기반 충돌로 바꿔 NavMesh를 재생성했습니다.</p></div><div class="blk"><h4><b>03</b> 결과</h4><p>빌드 전용 DDC와 배포 ZIP SHA-256 검사를 자동화했습니다. Cook 전후 Zone 좌표 오차 <em>0</em>, 프로젝트 자동화 테스트 <em>1,148개</em> 통과, 배포 파일 <em>100개</em> 해시가 모두 일치했습니다.</p></div></div><div class="tr-side"><figure class="shot side-img pkg-shot"><img src="img/ff_pkg_before.jpg" alt="수정 전 Shipping 빌드 시작 화면. 카메라 시작 높이가 틀어져 화면에 지면만 보인다" loading="lazy"><figcaption><b>수정 전 · Shipping 빌드 시작 화면</b> 카메라 시작 높이가 틀어져 지면만 보입니다</figcaption></figure>
+<div class="cmp">
+  <div class="cmp-col bad">
+    <h5>수정 전</h5>
+    <div class="node ghost">에디터 전용 부모<small>Cook에서 제거됨</small></div>
+    <div class="link">↓ 상대 위치만 남음</div>
+    <div class="node">런타임 Zone 13개</div>
+    <p class="pos">Cook 후 <b>(-7,410, -4,380) cm</b><br>원본 위치에서 이탈</p>
+  </div>
+  <div class="cmp-col ok">
+    <h5>수정 후</h5>
+    <div class="node">부모 연결 해제<small>월드 위치·회전·크기 유지</small></div>
+    <div class="link">↓ 월드 좌표 그대로 저장</div>
+    <div class="node">런타임 Zone 13개</div>
+    <p class="pos">Cook 후 <b>(76,510, 30,270) cm</b><br>원본과 동일</p>
+  </div>
+</div>
+<p class="cmp-note">대표 사례 GZ_Tutorial · Cook 전후 Zone 데이터 비교</p>
+<div class="metrics m3"><div class="metric"><strong>13 / 13</strong><span>Zone 월드 좌표 보존</span></div><div class="metric"><strong>1,148</strong><span>자동화 테스트 통과</span></div><div class="metric"><strong>100 / 100</strong><span>배포 파일 해시 일치</span></div></div></div></div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>11</span></div></section>
+<section class="page light trouble ">
+<nav class="tabs" aria-hidden="true"><span class="">OVERVIEW</span><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · TROUBLESHOOTING 06</p>
+<div class="t-head"><h2 class="t-title">미리보기와 실제 효과가 같은 기준을 쓰게 했습니다</h2><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/a25bf9f7" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div>
+<div class="tr-grid"><div class="tr-text"><div class="blk"><h4><b>01</b> 문제</h4><p>주변 시설 조합에 따라 수익 보너스가 붙는데, 배치 전 미리보기와 실제 적용이 다른 규칙으로 계산되면 효과가 과장될 수 있었습니다. 복제·이동 중인 시설이 이전 위치와 함께 집계되는 문제도 있었습니다.</p></div><div class="blk"><h4><b>02</b> 해결</h4><p>UObject가 아닌 평가기(FFF_FacilitySynergyEvaluator) 하나를 실제 효과와 미리보기가 함께 쓰게 했습니다. 이동 대상의 기존 번호는 평가에서 빼고, 효과가 큰 규칙부터 적용하되 같은 그룹은 건너뛰고 전체 상한 안에서만 더합니다.</p></div><div class="blk"><h4><b>03</b> 결과</h4><p>월드를 바꾸지 않고 후보 위치의 효과 전후를 계산합니다. 동률은 규칙 이름 순으로 정해 계산 순서에 따른 표시 차이를 없앴습니다.</p></div></div><div class="tr-side"><div class="same-eval"><div class="se-src"><span>실제 수익 보너스</span><span>배치 전 미리보기</span></div><div class="se-arrow">↘ ↙</div><div class="se-core">같은 <b>Evaluate()</b> · 이동 대상의 기존 위치 제외 · 그룹 중복·전체 상한 적용</div></div><div class="code code-sm"><div class="code-head"><span>FF_FacilitySynergyEvaluator.cpp</span></div><pre><span class="c-com">// … 정렬 람다 생략: 보너스가 큰 규칙 먼저, 같으면 규칙 이름 순</span>
+<span class="c-ty">TSet</span>&lt;<span class="c-ty">FName</span>&gt; <span class="c-id">AppliedGroups</span>;
+<span class="c-kw">for</span> (<span class="c-kw">const</span> <span class="c-kw">int32</span> <span class="c-id">MatchIndex</span> : <span class="c-id">Active</span>)
+{
+    <span class="c-ty">FFF_FacilitySynergyMatch</span>&amp; <span class="c-id">Match</span> = <span class="c-id">Result</span>.<span class="c-id">Matches</span>[<span class="c-id">MatchIndex</span>];
+    <span class="c-kw">const</span> <span class="c-ty">FFF_FacilitySynergyRow</span>&amp; <span class="c-id">Row</span> = <span class="c-id">Rules</span>[<span class="c-id">Match</span>.<span class="c-id">RuleIndex</span>].<span class="c-id">Row</span>;
+    <span class="c-kw">if</span> (!<span class="c-id">Row</span>.<span class="c-id">StackingGroup</span>.<span class="c-fn">IsNone</span>() &amp;&amp; <span class="c-id">AppliedGroups</span>.<span class="c-fn">Contains</span>(<span class="c-id">Row</span>.<span class="c-id">StackingGroup</span>)) <span class="c-kw">continue</span>;
+    <span class="c-kw">if</span> (!<span class="c-id">Row</span>.<span class="c-id">StackingGroup</span>.<span class="c-fn">IsNone</span>()) <span class="c-id">AppliedGroups</span>.<span class="c-fn">Add</span>(<span class="c-id">Row</span>.<span class="c-id">StackingGroup</span>);
+    <span class="c-id">Match</span>.<span class="c-id">AppliedPercent</span> = <span class="c-ty">FMath</span>::<span class="c-fn">Min</span>(<span class="c-id">Row</span>.<span class="c-id">RevenueBonusPercent</span>, <span class="c-ty">FMath</span>::<span class="c-fn">Max</span>(<span class="c-num">0</span>.f, <span class="c-id">MaxPercent</span> - <span class="c-id">Result</span>.<span class="c-id">TotalPercent</span>));
+    <span class="c-id">Result</span>.<span class="c-id">TotalPercent</span> += <span class="c-id">Match</span>.<span class="c-id">AppliedPercent</span>;
+}</pre></div></div></div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>12</span></div></section>
+<section class="page light more">
+<nav class="tabs" aria-hidden="true"><span class="">OVERVIEW</span><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · TROUBLESHOOTING 07–09</p>
+<div class="t-head"><h2 class="t-title">그 밖의 개선</h2></div>
+<div class="cards3">
+<div class="mcard"><h3>통합 건설 영역과 기존 구역 데이터의 책임 분리</h3><dl><dt>문제</dt><dd>맞닿은 구역 경계 때문에 시설을 연속 배치하지 못했습니다. 31개 구역 데이터는 NPC 판단과 혼잡·이동 거리 계산에도 쓰이고 있었습니다.</dd><dt>해결</dt><dd>BuildArea_Main으로 건설 영역만 통합하고 FFZSGameplayZone 31개는 보존했습니다. exact union/subtract로 경계와 실제 구멍을 구분했습니다.</dd><dt>결과</dt><dd>맞닿은 구역을 가로질러 배치할 수 있고, 재로딩·에디터 빌드·자동화 테스트 15개로 확인했습니다.</dd></dl><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/6c6c829" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div>
+<div class="mcard"><h3>시설 선택과 캐릭터 이동 Collision channel 분리</h3><dl><dt>문제</dt><dd>플레이어 캐릭터가 설치한 시설을 통과했습니다. 선택용 프록시가 QueryOnly trace 전용이라 이동을 막지 못했습니다.</dd><dt>해결</dt><dd>FacilitySelection은 선택 전용으로 유지하고, FacilityPlayerCollision을 추가해 캐릭터 capsule만 Block하도록 분리했습니다.</dd><dt>결과</dt><dd>캐릭터가 시설을 통과하지 않고, 선택 처리는 별도 channel에서 그대로 동작합니다.</dd></dl><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/46a7def" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div>
+<div class="mcard"><h3>시설 수익 Data Table 일원화와 fingerprint 호환</h3><dl><dt>문제</dt><dd>115종 시설의 수익 규칙이 흩어져 있었고, override 필드를 항상 명령 fingerprint에 넣으면 기존 명령의 바이트 호환이 깨졌습니다.</dd><dt>해결</dt><dd>DT_FacilityRevenues로 수익 규칙을 일원화하고, override가 켜졌거나 금액이 0이 아닐 때만 필드를 직렬화했습니다.</dd><dt>결과</dt><dd>기획자가 표 한 행으로 같은 종류의 수익을 조정하고, 기본 정책 명령은 기존 fingerprint를 유지합니다.</dd></dl><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project/commit/dcd448a" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div>
+</div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>13</span></div></section>
+<section class="page light learn">
+<nav class="tabs" aria-hidden="true"><span class="">OVERVIEW</span><span class="">ARCHITECTURE</span><span class="">TROUBLESHOOTING</span><span class="on">LEARNINGS</span></nav>
+<p class="eyebrow">FESTA FIESTA! · LEARNINGS</p>
+<h2 class="ln-title">배운 점</h2>
+<div class="lrn-grid"><div class="lrn"><span>LEARNING 01</span><p>기존 시스템이 쓰는 데이터의 책임은 보존한 채, 새 기능의 처리 범위만 분리해야 합니다.</p></div><div class="lrn"><span>LEARNING 02</span><p>사용자 조작 기능은 좌표 계산뿐 아니라 NavMesh 갱신처럼 연쇄되는 런타임 비용까지 함께 설계해야 합니다.</p></div><div class="lrn"><span>LEARNING 03</span><p>여러 객체를 바꾸는 편집은 '전부 성공 또는 전부 복구' 규칙을 먼저 정해야 데이터가 어긋나지 않습니다.</p></div><div class="lrn"><span>LEARNING 04</span><p>에디터에서 맞는 것과 패키지에서 맞는 것은 다릅니다. Cook 결과를 직접 비교하는 검증 경로가 필요합니다.</p></div></div><div class="next"><span>NEXT</span><p>최적화는 측정부터 — 다음 프로젝트에서는 Unreal Insights로 시설 수에 따른 Game Thread 시간을 전후 비교해, 성능 개선을 숫자로 남기겠습니다.</p></div>
+<div class="foot"><span>한광훈 · FESTA FIESTA!</span><span>14</span></div></section>
+<section class="page dark intro" id="leftbehind">
+<div class="in-num"><span>02</span><i></i></div>
+<div class="in-grid">
+  <div>
+    <h2 class="in-title">LEFT BEHIND</h2>
+    <p class="in-desc">Unreal Engine 5.7로 제작한 5인 멀티플레이 보스 레이드 RPG입니다. 플레이어는 EOS 세션에서 파티를 구성하고 캐릭터를 선택한 뒤, 컷씬과 카운트다운을 거쳐 보스 MK-1 RUSTOR를 공략합니다. Seamless Travel 이후의 초기화 순서, 서버 권한 공격 판정, 레이드 결과 집계처럼 멀티플레이 진입과 전투 흐름의 안정성에 집중했습니다.</p>
+    <div class="pills"><a class="pill pill-dark" href="https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>GitHub</span></a></div>
+  </div>
+  <figure class="shot in-img"><img src="img/lb_title.jpg" alt="LEFT BEHIND 타이틀 화면" loading="lazy"></figure>
+</div>
+<div class="in-meta">
+  <div class="meta-l">
+    <div><h5>기간</h5><p>2026.06 ~ 2026.07 (2개월)</p></div>
+    <div><h5>팀 구성</h5><p>5인 팀 프로젝트</p></div>
+    <div><h5>개발 환경</h5><p>UE 5.7.4 · C++ · GAS · EOS · Online Subsystem · Slate</p></div>
+  </div>
+  <div class="meta-r"><h5>담당 역할</h5><ul>
+    <li>EOS 세션 생성·참가·초대·방 이름 검증</li>
+    <li>Seamless Travel 기반 레이드 시작 흐름</li>
+    <li>서버 권한 기본공격 입력·연사 판정</li>
+    <li>레이드 MVP 산식·스코어보드 집계</li></ul></div>
+</div>
+<div class="foot"><span>한광훈 · LEFT BEHIND</span><span>15</span></div></section>
+<section class="page light arch-page">
+<nav class="tabs" aria-hidden="true"><span class="on">ARCHITECTURE</span><span class="">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">LEFT BEHIND · ARCHITECTURE</p>
+<div class="t-head"><h2 class="t-title">서비스 구조</h2></div>
+<div class="ar-grid">
+  <div class="ar-points">
+    <p class="ar-lead">레이드 진입부터 결과 화면까지, 네 개의 핵심 클래스를 주로 구현했습니다.</p>
+    <div class="pt"><span>1</span><div><h4>ULB_GameInstance</h4><p>EOS 세션 생성·검색·초대를 맡는 서브시스템과 공용 데이터 타입</p></div></div>
+    <div class="pt"><span>2</span><div><h4>ALB_RaidGameMode</h4><p>준비 완료 Barrier로 모든 클라이언트가 모인 뒤 레이드 시작</p></div></div>
+    <div class="pt"><span>3</span><div><h4>ALB_PlayerController</h4><p>서버 권한 기본공격 입력과 Seamless Travel 뒤 HUD 초기화</p></div></div>
+    <div class="pt"><span>4</span><div><h4>ULB_BattleHUDWidget</h4><p>캐릭터 선택·전투 HUD·MVP 스코어보드 표시</p></div></div>
+  </div>
+  <div class="ar-diag diag-scroll"><svg class="diagram arch" viewBox="0 0 1000 560" role="img" aria-label="LEFT BEHIND 서비스 구조"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto-start-reverse"><path d="M1 1 L9 5 L1 9" fill="none" class="ar-h"/></marker></defs><rect x="0" y="0" width="1000" height="560" rx="18" class="sv-bg"/><g class="bx-s"><rect x="40" y="50" width="126" height="24" class="bx-tab"/><text x="48" y="67" class="bx-tag">ULB_GameInstance</text><rect x="40" y="74" width="260" height="138" class="bx-body"/><text x="54" y="108" class="bx-title">게임 인스턴스·공용</text><text x="54" y="134" class="bx-desc">EOS 세션 서브시스템</text><text x="54" y="153" class="bx-desc">오디오·데이터 타입 관리</text></g><g class="bx-s"><rect x="370" y="50" width="147" height="24" class="bx-tab"/><text x="378" y="67" class="bx-tag">ULB_BattleHUDWidget</text><rect x="370" y="74" width="260" height="138" class="bx-body"/><text x="384" y="108" class="bx-title">UI·캐릭터 선택</text><text x="384" y="134" class="bx-desc">메뉴·캐릭터 선택</text><text x="384" y="153" class="bx-desc">전투 HUD·스코어보드</text></g><g class="bx-w"><rect x="700" y="50" width="168" height="24" class="bx-tab"/><text x="708" y="67" class="bx-tag">ULB_AbilitySystemComp…</text><rect x="700" y="74" width="260" height="138" class="bx-body"/><text x="714" y="108" class="bx-title">어빌리티·전투 행동</text><text x="714" y="134" class="bx-desc">보스·플레이어 어빌리티</text><text x="714" y="153" class="bx-desc">실행과 속성 관리</text></g><g class="bx-s"><rect x="40" y="306" width="126" height="24" class="bx-tab"/><text x="48" y="323" class="bx-tag">ALB_RaidGameMode</text><rect x="40" y="330" width="260" height="138" class="bx-body"/><text x="54" y="364" class="bx-title">게임 규칙·진행</text><text x="54" y="390" class="bx-desc">준비 완료 Barrier</text><text x="54" y="409" class="bx-desc">레이드 진행·결과 집계</text></g><g class="bx-s"><rect x="370" y="306" width="154" height="24" class="bx-tab"/><text x="378" y="323" class="bx-tag">ALB_PlayerController</text><rect x="370" y="330" width="260" height="138" class="bx-body"/><text x="384" y="364" class="bx-title">플레이어 제어·상태</text><text x="384" y="390" class="bx-desc">서버 권한 입력·연사 판정</text><text x="384" y="409" class="bx-desc">HUD 초기화 재시도</text></g><g class="bx-w"><rect x="700" y="306" width="133" height="24" class="bx-tab"/><text x="708" y="323" class="bx-tag">ALB_BaseCharacter</text><rect x="700" y="330" width="260" height="138" class="bx-body"/><text x="714" y="364" class="bx-title">캐릭터</text><text x="714" y="390" class="bx-desc">플레이어·보스</text><text x="714" y="409" class="bx-desc">캐릭터 공통 기반</text></g><line x1="370" y1="143" x2="304" y2="143" class="ar" marker-end="url(#ah)"/><text x="337" y="133" text-anchor="middle" class="ar-t">타입 사용</text><line x1="630" y1="143" x2="696" y2="143" class="ar" marker-end="url(#ah)"/><text x="663" y="133" text-anchor="middle" class="ar-t">속성 표시</text><line x1="170" y1="306" x2="170" y2="216" class="ar" marker-end="url(#ah)"/><text x="180" y="268" text-anchor="start" class="ar-t">타입·세션 사용</text><line x1="500" y1="212" x2="500" y2="302" class="ar" marker-end="url(#ah)"/><text x="510" y="262" text-anchor="start" class="ar-t">메뉴 요청</text><line x1="300" y1="399" x2="366" y2="399" class="ar" marker-end="url(#ah)"/><text x="333" y="389" text-anchor="middle" class="ar-t">플레이어 설정</text><line x1="700" y1="399" x2="634" y2="399" class="ar" marker-end="url(#ah)"/><text x="667" y="389" text-anchor="middle" class="ar-t">플레이어 상태</text><rect x="760" y="520" width="16" height="16" class="lg-s"/><text x="782" y="533" class="lg-t">주로 구현</text><rect x="862" y="520" width="16" height="16" class="lg-w"/><text x="884" y="533" class="lg-t">팀원 구현</text></svg></div>
+</div>
+<div class="foot"><span>한광훈 · LEFT BEHIND</span><span>16</span></div></section>
+<section class="page light pair">
+<nav class="tabs" aria-hidden="true"><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">LEFT BEHIND · TROUBLESHOOTING 01–02</p>
+<div class="pair-grid">
+<div class="half"><figure class="shot half-img"><img src="img/lb_countdown.jpg" alt="레이드 시작 카운트다운 화면" loading="lazy"></figure><div class="half-head"><h3>레이드 시작을 준비 완료 Barrier로 동기화</h3><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/ee29fc2c39b19a00caec20189f27fa9787d4cf26" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div><div class="hb"><b>문제</b><p>새 Controller·PlayerState가 준비되기 전 컷씬이 자동 재생돼, 클라이언트가 입장한 뒤 전투가 시작되지 않았습니다.</p></div><div class="hb"><b>해결</b><p>준비 RPC를 받은 인원을 ExpectedRaidPlayers와 비교해 모두 모이면 컷씬·카운트다운을 시작하고, 타임아웃도 뒀습니다.</p></div><div class="hb"><b>결과</b><p>모든 클라이언트가 준비된 뒤 레이드가 시작되는 것을 진입 흐름으로 확인했습니다.</p></div><div class="code code-xs"><div class="code-head"><span>LB_RaidGameMode.cpp</span></div><pre><span class="c-kw">const</span> <span class="c-kw">int32</span> <span class="c-id">RequiredPlayers</span> = <span class="c-id">ExpectedRaidPlayerCount</span> &gt; <span class="c-num">0</span>
+    ? <span class="c-id">ExpectedRaidPlayerCount</span>
+    : <span class="c-ty">FMath</span>::<span class="c-fn">Max</span>(<span class="c-num">1</span>, <span class="c-fn">GetNumPlayers</span>());
+<span class="c-kw">if</span> (<span class="c-id">RaidReadyControllers</span>.<span class="c-fn">Num</span>() &lt; <span class="c-id">RequiredPlayers</span>)
+{
+    <span class="c-kw">return</span>;
+}
+bRaidStartTriggered = <span class="c-kw">true</span>;</pre></div></div>
+<div class="half"><figure class="shot half-img"><img src="img/lb_boss.jpg" alt="보스 MK-1 RUSTOR 전투 화면" loading="lazy"></figure><div class="half-head"><h3>기본공격 연사 판정을 서버 타이머로 일원화</h3><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/56b061e5989d9993ced3939234c614ac18031c17" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div><div class="hb"><b>문제</b><p>Triggered 이벤트마다 클라이언트가 간격을 재고 RPC를 보내, 입력 프레임과 네트워크 지연에 따라 연사 간격이 달라졌습니다.</p></div><div class="hb"><b>해결</b><p>눌림·뗌 상태만 ServerSetPrimaryHeld로 보내고, 서버 타이머가 최소 간격을 검사해 공격을 활성화합니다.</p></div><div class="hb"><b>결과</b><p>연사 판정이 서버 시각 기준으로 통일됐고, RPC는 상태가 바뀔 때만 전송됩니다.</p></div><div class="code code-xs"><div class="code-head"><span>LB_PlayerController.h</span></div><pre><span class="c-com">// 서버가 실제 공격 시도 시각을 보관해 hold 타이머와</span>
+<span class="c-com">// 단발 RPC가 동일한 rate gate를 공유한다.</span>
+<span class="c-kw">double</span> <span class="c-id">LastPrimaryActivationServerTime</span> = -<span class="c-num">1.0</span>;
+<span class="c-kw">bool</span> bLocalPrimaryHeld = <span class="c-kw">false</span>;
+<span class="c-kw">bool</span> bServerPrimaryHeld = <span class="c-kw">false</span>;
+<span class="c-ty">FTimerHandle</span> <span class="c-id">ServerPrimaryRepeatTimerHandle</span>;</pre></div></div>
+</div>
+<div class="foot"><span>한광훈 · LEFT BEHIND</span><span>17</span></div></section>
+<section class="page light pair">
+<nav class="tabs" aria-hidden="true"><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">LEFT BEHIND · TROUBLESHOOTING 03–04</p>
+<div class="pair-grid">
+<div class="half"><div class="half-head"><h3>역할 편향 없는 레이드 MVP 선정 산식</h3></div><div class="hb"><b>문제</b><p>누적 피해량만으로 MVP를 뽑아, 피해와 회복의 단위·규모 차이 때문에 힐러가 구조적으로 선정될 수 없었습니다.</p></div><div class="hb"><b>해결</b><p>산식을 PlayerState와 분리된 순수 함수 네임스페이스(LBRaidMVP)로 만들어 단위 테스트가 가능하게 하고, 역할별 정규화와 가중합을 적용했습니다.</p></div><div class="hb"><b>결과</b><p>자동화 테스트 5종으로 역할 공정성, 결과 결정성, 비정상 입력 방어를 검증했습니다.</p></div><div class="formula">
+  <div class="fx"><span class="fx-k">점수</span> = <b>0.8</b> × 주 기여<sub>정규화</sub> + <b>0.2</b> × 보조 기여<sub>정규화</sub></div>
+  <div class="fx-row"><span>정규화</span> 값 ÷ 같은 역할의 최댓값 → 0~1 (딜러·힐러 규모 차이 제거)</div>
+  <div class="fx-row"><span>동점</span> 사망 수 → 주 기여 → PlayerId 순 안정 정렬</div>
+  <div class="fx-row"><span>방어</span> NaN · Infinity · 음수 입력 정리(SanitizeStat)</div>
+  <div class="tags">Formula · RoleFairness · ZeroContribution · InvalidStats · TieBreaks</div>
+</div>
+<div class="example"><span>예시</span><p>딜러 A 피해 9,000 · 힐러 B 회복 3,000이 각자 역할의 최댓값이면 둘 다 <b>1.0</b>으로 정규화돼, 단위가 달라도 같은 기준에서 비교됩니다.</p></div></div>
+<div class="half"><div class="half-head"><h3>오버킬·오버힐을 걸러낸 스코어보드 집계</h3></div><div class="hb"><b>문제</b><p>GAS가 HP 적용 전 수치를 그대로 통계에 반영해, 보스 오버킬과 파티원 오버힐이 실제 HP 변화보다 크게 집계됐습니다.</p></div><div class="hb"><b>해결</b><p>PreGameplayEffectExecute에서 적용 전 수치를 제한해 실제 변화량을 구하고, 서버 권한·전투 중·0이 아닌 변화만 집계해 클라이언트 중복과 자기 회복을 제외했습니다.</p></div><div class="hb"><b>결과</b><p>피해·회복 통계와 이벤트 브로드캐스트를 실제 HP 변화량 기준으로 통일해 과대 집계를 없앴습니다.</p></div><div class="steps">
+  <span>GE 적용 전 수치</span><i>→</i><span>0 ~ MaxHealth로 clamp</span><i>→</i><span>실제 변화량<br>EffectiveDelta</span><i>→</i><span>서버 권한 · 전투 중<br>0이 아닌 변화만</span><i>→</i><span class="ok">보스 피격 = 피해<br>타 파티원 회복 = 회복</span>
+</div>
+<div class="example"><span>예시</span><p>남은 HP가 200인 보스에게 500 피해를 주면, 기존에는 <s>500</s>이 집계됐고 변경 후에는 실제 HP 변화량인 <b>200</b>만 집계됩니다.</p></div></div>
+</div>
+<div class="foot"><span>한광훈 · LEFT BEHIND</span><span>18</span></div></section>
+<section class="page light more">
+<nav class="tabs" aria-hidden="true"><span class="">ARCHITECTURE</span><span class="on">TROUBLESHOOTING</span><span class="">LEARNINGS</span></nav>
+<p class="eyebrow">LEFT BEHIND · TROUBLESHOOTING 05–07</p>
+<div class="t-head"><h2 class="t-title">멀티플레이 진입 흐름 안정화</h2></div>
+<div class="cards3">
+<div class="mcard"><h3>Seamless Travel 뒤 레이드 HUD 초기화 재시도</h3><dl><dt>문제</dt><dd>원격 클라이언트가 레이드에 들어간 뒤 HUD를 보지 못할 수 있었습니다. Controller BeginPlay가 로컬 플레이어 연결보다 먼저 실행됐습니다.</dd><dt>해결</dt><dd>ReceivedPlayer·BeginPlayingState·OnRep_PlayerState에서 중복 생성에 안전한 초기화를 재호출하고, GetLocalPlayer 검사를 추가했습니다.</dd><dt>결과</dt><dd>Pawn과 GameState 복제가 늦어도 준비가 끝나면 HUD가 붙습니다.</dd></dl><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/25c860163da82a675615da52004617aa7caeeb89" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div>
+<div class="mcard"><h3>EOS 친구 초대의 누락된 소유자 정보 보정</h3><dl><dt>문제</dt><dd>친구 초대를 수락해도 방 참가로 넘어가지 못했습니다. UE 5.7 초대 payload의 OwningUserId가 비면 유효한 세션까지 거부했습니다.</dd><dt>해결</dt><dd>세션 정보가 유효하면 초대를 수락하고, 소유자가 비면 같은 세션 ID의 캐시 검색 결과에서 정보를 복원했습니다.</dd><dt>결과</dt><dd>소유자 정보가 없는 초대도 참가 절차로 넘어가고, 다른 로비 소유자를 복사하지 않는 자동화 테스트를 통과했습니다.</dd></dl><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/c016f76284b8e393eb4a975a111cacdfdee8cb6b" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div>
+<div class="mcard"><h3>방 이름 검증과 방 생성 취소 상태 분리</h3><dl><dt>문제</dt><dd>방장 닉네임으로만 방을 구분해 같은 닉네임 방을 구별할 수 없었고, 방 생성 취소가 입력 상태와 묶여 뒤로가기 시 메뉴가 복구되지 않았습니다.</dd><dt>해결</dt><dd>방 이름 정규화(공백 제거·한글/영문/숫자 2~24자)와 생성 전 같은 이름 조회를 추가하고, bRoomCreationActive·CancelRoomCreation으로 취소 상태를 분리했습니다.</dd><dt>결과</dt><dd>같은 이름의 방 생성을 사전 조회로 막고, 방 생성 → 목록 → 루트 메뉴까지 뒤로가기가 이어집니다.</dd></dl><a class="pill" href="https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project/commit/eba7f514cd2039457cb25360932ff3b01a120cae" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>코드 변경 보기</span></a></div>
+</div>
+<div class="foot"><span>한광훈 · LEFT BEHIND</span><span>19</span></div></section>
+<section class="page light learn">
+<nav class="tabs" aria-hidden="true"><span class="">ARCHITECTURE</span><span class="">TROUBLESHOOTING</span><span class="on">LEARNINGS</span></nav>
+<p class="eyebrow">LEFT BEHIND · LEARNINGS</p>
+<h2 class="ln-title">배운 점</h2>
+<div class="lrn-grid"><div class="lrn"><span>LEARNING 01</span><p>Seamless Travel 뒤에는 객체 준비 순서를 가정하지 말고, 서버의 준비 조건과 클라이언트 재진입 경로를 함께 설계해야 합니다.</p></div><div class="lrn"><span>LEARNING 02</span><p>연속 입력의 전투 판정은 클라이언트 프레임이 아니라 서버 시각과 타이머를 기준으로 일원화해야 합니다.</p></div><div class="lrn"><span>LEARNING 03</span><p>외부 온라인 서비스의 일시적 실패는 적용 범위와 최대 횟수가 제한된 지수 백오프로 복구해야 합니다.</p></div><div class="lrn"><span>LEARNING 04</span><p>멀티플레이 UI는 단발 Snapshot이 아니라 GameState 변경 이벤트와 델리게이트로 갱신해야 합니다.</p></div></div><div class="next"><span>NEXT</span><p>방 이름 중복 검사는 '조회 후 생성' 사이에 동시 생성 가능성이 남습니다. 다음에는 서버 측 고유 키 예약으로 원자적으로 보장하겠습니다.</p></div>
+<div class="foot"><span>한광훈 · LEFT BEHIND</span><span>20</span></div></section>
+<section class="page dark thanks" id="contact">
+<p class="eyebrow center">THANK YOU</p>
+<h2 class="th-title">감사합니다</h2>
+<p class="th-lead">시설이 놓이는 순간부터 패키징 빌드까지, 그리고 레이드 입장부터 결과 화면까지 —<br>보이지 않는 경계에서 시스템이 어긋나지 않도록 만드는 프로그래머가 되겠습니다.</p>
+<div class="th-links"><a class="pill pill-dark" href="https://github.com/kpo9101" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg><span>github.com/kpo9101</span></a><a class="pill pill-dark" href="https://youtu.be/olpAoV4WH7Y" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true"><path fill="currentColor" d="M23 7.2a3 3 0 00-2.1-2.1C19 4.6 12 4.6 12 4.6s-7 0-8.9.5A3 3 0 001 7.2 31 31 0 00.5 12a31 31 0 00.5 4.8 3 3 0 002.1 2.1c1.9.5 8.9.5 8.9.5s7 0 8.9-.5a3 3 0 002.1-2.1 31 31 0 00.5-4.8 31 31 0 00-.5-4.8zM9.75 15.02V8.98L15.5 12z"/></svg><span>Festa Fiesta! 시연 영상</span></a><a class="pill pill-dark" href="https://teamsparta.notion.site/8-13-Festa-Fiesta-3b12dc3ef514808a9247c952c9ecf639" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="2" d="M6 2h9l5 5v15H6zM14 2v6h6M9 13h8M9 17h8"/></svg><span>프로젝트 브로셔</span></a></div>
+<p class="th-contact">한광훈 · kpo9101@gmail.com</p>
+</section></main></div>
+</body>
+</html>
