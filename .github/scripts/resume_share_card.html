@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1200, initial-scale=1">
+<title>한광훈 이력서 공유 카드</title>
+<style>
+@font-face {
+  font-family: Pretendard;
+  font-weight: 45 920;
+  src: url("../../fonts/PretendardVariable.woff2") format("woff2");
+}
+@font-face {
+  font-family: JetBrains;
+  font-weight: 600;
+  src: url("../../fonts/jetbrains-mono-latin-600-normal.woff2") format("woff2");
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+body { color: #111d32; font-family: Pretendard, sans-serif; background: #f9fbff; }
+.card { position: relative; width: 1200px; height: 630px; border-top: 10px solid #2457d6; }
+.eyebrow { position: absolute; left: 76px; top: 57px; display: flex; align-items: center; gap: 13px; color: #2457d6; font-size: 22px; font-weight: 750; letter-spacing: .12em; }
+.eyebrow::before { content: ""; width: 12px; height: 12px; background: #2457d6; }
+h1 { position: absolute; left: 70px; top: 153px; margin: 0; font-size: 116px; font-weight: 850; letter-spacing: -.055em; line-height: 1.15; }
+.role-en { position: absolute; left: 76px; top: 310px; color: #2457d6; font-size: 51px; font-weight: 780; letter-spacing: -.025em; line-height: 1.15; }
+.role-ko { position: absolute; left: 76px; top: 378px; font-size: 44px; font-weight: 650; letter-spacing: -.035em; line-height: 1.2; }
+.symbol { position: absolute; right: 76px; top: 205px; width: 218px; height: 218px; display: flex; align-items: center; justify-content: center; border: 1px solid #dce6ff; border-radius: 30px; background: #edf3ff; color: #2457d6; font-family: JetBrains, monospace; font-size: 70px; font-weight: 600; letter-spacing: -.07em; }
+.symbol::before, .symbol::after { content: ""; position: absolute; width: 25px; height: 25px; border-color: #2457d6; border-style: solid; opacity: .55; }
+.symbol::before { left: 22px; top: 22px; border-width: 2px 0 0 2px; }
+.symbol::after { right: 22px; bottom: 22px; border-width: 0 2px 2px 0; }
+footer { position: absolute; left: 76px; right: 76px; bottom: 53px; padding-top: 22px; border-top: 1px solid #d9e2f1; display: flex; align-items: center; justify-content: space-between; }
+.url { color: #536581; font-size: 25px; font-weight: 550; letter-spacing: -.01em; }
+.kind { color: #536581; font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="eyebrow">RESUME &amp; PORTFOLIO</div>
+  <h1>한광훈</h1>
+  <div class="role-en">Unreal C++</div>
+  <div class="role-ko">게임 클라이언트 프로그래머</div>
+  <div class="symbol" aria-hidden="true">C++</div>
+  <footer><span class="url">kpo9101.github.io</span><span class="kind">이력서 · 포트폴리오</span></footer>
+</main>
+</body>
+</html>

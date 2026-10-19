@@ -23,6 +23,8 @@
 | --- | --- |
 | `content.json` | 포트폴리오의 모든 글·숫자·이미지 경로·코드 (고치는 곳은 여기 하나) |
 | `index.html` | 웹 이력서 (메인) — 인쇄 스타일이 A4 이력서 레이아웃 |
+| `img/og-resume-20261019.png` | 이력서 링크 공유 미리보기 이미지 (1200×630, 이름·직무 카드) |
+| `.github/scripts/resume_share_card.html` | 공유 카드 편집 원본 — 1200×630 크기로 PNG 캡처 후 공유 이미지 교체 |
 | `resume.pdf` | 내려받기용 이력서 PDF — 직접 제공한 수정본 원본을 유지하며, 새 이력서는 이 파일을 교체 |
 | `resume-web.pdf` | `index.html` 인쇄 레이아웃으로 자동 생성하는 웹 이력서 PDF |
 | `.github/workflows/resume-pdf.yml`, `.github/scripts/resume_pdf.py` | `index.html`이 바뀌면 `resume-web.pdf`를 다시 만드는 자동 작업 |
