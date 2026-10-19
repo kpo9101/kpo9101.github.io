@@ -1,6 +1,7 @@
 # 한광훈 이력서 · 포트폴리오
 
 - 이력서(메인): https://kpo9101.github.io — 위쪽 막대 "PDF"·첫 화면 "이력서 PDF 다운로드"로 `resume.pdf`(직접 제공한 이력서 수정본)를 바로 받음
+- 이력서 공유용 링크: https://kpo9101.github.io/resume/ — 이름·직무 카드 메타데이터를 제공하며, 클릭하면 메인 이력서로 이동
 - 포트폴리오: https://kpo9101.github.io/portfolio.html
 - PDF 화면: https://kpo9101.github.io/pdf.html (버튼 "PDF로 저장" → 인쇄 창에서 대상 "PDF로 저장")
 - 편집 화면: https://kpo9101.github.io/edit.html
@@ -23,6 +24,7 @@
 | --- | --- |
 | `content.json` | 포트폴리오의 모든 글·숫자·이미지 경로·코드 (고치는 곳은 여기 하나) |
 | `index.html` | 웹 이력서 (메인) — 인쇄 스타일이 A4 이력서 레이아웃 |
+| `resume/index.html` | 링크 공유용 페이지 — 별도 URL·공유 카드 메타데이터, 방문자는 메인 이력서로 이동 |
 | `img/og-resume-20261019.png` | 이력서 링크 공유 미리보기 이미지 (1200×630, 이름·직무 카드) |
 | `.github/scripts/resume_share_card.html` | 공유 카드 편집 원본 — 1200×630 크기로 PNG 캡처 후 공유 이미지 교체 |
 | `resume.pdf` | 내려받기용 이력서 PDF — 직접 제공한 수정본 원본을 유지하며, 새 이력서는 이 파일을 교체 |
