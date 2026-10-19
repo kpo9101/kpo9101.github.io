@@ -1,0 +1,452 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>한광훈 이력서</title>
+<meta name="description" content="Unreal C++ 게임 클라이언트 프로그래머 한광훈의 이력서 — C++ 시스템 설계, 게임 수학, 디버깅, 자동화 테스트">
+<meta property="og:type" content="website">
+<meta property="og:title" content="한광훈 이력서 · Unreal C++ 게임 클라이언트 프로그래머">
+<meta property="og:description" content="복잡한 시스템을 모듈로 분리하고 테스트로 검증하며 완성하는 게임 클라이언트 프로그래머입니다.">
+<meta property="og:url" content="https://kpo9101.github.io/">
+<meta property="og:image" content="https://kpo9101.github.io/img/ff_cover.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230c0c0d'/%3E%3Ctext x='32' y='43' font-size='30' font-family='sans-serif' font-weight='800' fill='%23fafafa' text-anchor='middle'%3EH%3C/text%3E%3C/svg%3E">
+<style>
+@font-face { font-family: "Pretendard"; font-weight: 45 920; font-display: swap; src: url("fonts/PretendardVariable.woff2") format("woff2-variations"), url("fonts/PretendardVariable.woff2") format("woff2"); }
+
+:root {
+  --bg: #ffffff; --fg: #111214; --body: #45474d; --muted: #8a8c92; --line: #e4e5e8; --card: #f4f5f7; --chip-bd: #cfd1d6;
+  --accent: #2457d6; --accent-soft: #eaf0fd; --ok: #0b7a47; --bad: #c2412d; --focus: #2457d6;
+  --dark-bg: #0c0c0d; --dark-fg: #f4f4f5;
+  --wrap: 1040px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131417; --fg: #eeeff1; --body: #b9bbc1; --muted: #8b8e95; --line: #2a2c31; --card: #1c1e22; --chip-bd: #3a3d44;
+    --accent: #7ea2ff; --accent-soft: #1d2640; --ok: #4cc38a; --bad: #ff8a73; --focus: #7ea2ff; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131417; --fg: #eeeff1; --body: #b9bbc1; --muted: #8b8e95; --line: #2a2c31; --card: #1c1e22; --chip-bd: #3a3d44;
+  --accent: #7ea2ff; --accent-soft: #1d2640; --ok: #4cc38a; --bad: #ff8a73; --focus: #7ea2ff; color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 72px; }
+html, body { margin: 0; padding: 0; }
+body { background: var(--bg); color: var(--fg); font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Noto Sans KR", system-ui, sans-serif; font-size: 15px; line-height: 1.65; word-break: keep-all; overflow-wrap: anywhere; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+a { color: inherit; text-decoration: none; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 6px; }
+.pad { padding-left: max(16px, env(safe-area-inset-left, 0px), calc((100% - var(--wrap)) / 2)); padding-right: max(16px, env(safe-area-inset-right, 0px), calc((100% - var(--wrap)) / 2)); }
+
+/* ---------- top bar ---------- */
+.topbar { position: sticky; top: 0; z-index: 10; display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 12px; background: color-mix(in srgb, var(--bg) 88%, transparent); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.tb-name { font-weight: 800; font-size: 16px; white-space: nowrap; }
+.tb-name span { font-weight: 600; color: var(--muted); font-size: 13px; margin-left: 6px; }
+.topbar nav { display: flex; align-items: center; gap: 18px; font-size: 14px; font-weight: 600; color: var(--muted); overflow-x: auto; scrollbar-width: none; }
+.topbar nav::-webkit-scrollbar { display: none; }
+.topbar nav a { white-space: nowrap; }
+.topbar nav a:hover { color: var(--fg); }
+.topbar nav .tb-pf { color: var(--bg); background: var(--fg); padding: 6px 12px; border-radius: 999px; }
+.topbar nav .tb-pf:hover { color: var(--bg); opacity: .86; }
+.topbar nav .tb-pdf { display: inline-flex; align-items: center; gap: 5px; color: var(--fg); border: 1px solid var(--chip-bd); padding: 5px 11px; border-radius: 999px; }
+.topbar nav .tb-pdf:hover { border-color: var(--fg); }
+.topbar nav .tb-pdf svg { width: 14px; height: 14px; flex: none; }
+@media (max-width: 720px) { .topbar nav .tb-sec { display: none; } .tb-name span { display: none; } }
+
+/* ---------- hero ---------- */
+.hero { padding-block: 72px 56px; border-bottom: 1px solid var(--line); }
+.eyebrow { font-size: 12px; font-weight: 700; letter-spacing: .14em; color: var(--muted); text-transform: uppercase; }
+.hero h1 { margin: 10px 0 4px; font-size: clamp(40px, 7vw, 64px); line-height: 1.08; letter-spacing: -0.03em; font-weight: 850; }
+.hero .role { font-size: clamp(17px, 2.2vw, 20px); font-weight: 650; color: var(--body); margin: 0 0 28px; }
+.hero .lead { font-size: clamp(19px, 2.6vw, 24px); line-height: 1.5; font-weight: 750; letter-spacing: -0.01em; margin: 0 0 14px; max-width: 30em; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 32px; padding: 0; list-style: none; }
+.tags li { font-size: 13px; font-weight: 650; color: var(--accent); background: var(--accent-soft); padding: 4px 10px; border-radius: 999px; }
+.contact { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.contact a { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; border: 1px solid var(--chip-bd); border-radius: 999px; padding: 9px 16px; }
+.contact a:hover { border-color: var(--fg); }
+.contact a svg { width: 16px; height: 16px; flex: none; }
+.contact a.primary { background: var(--fg); color: var(--bg); border-color: var(--fg); }
+.contact a.primary:hover { opacity: .88; }
+
+/* ---------- sections ---------- */
+section.block { padding-block: 56px; border-bottom: 1px solid var(--line); }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+.sec-head h2 { margin: 0; font-size: 24px; font-weight: 800; letter-spacing: -0.02em; }
+.sec-head .more { font-size: 14px; font-weight: 650; color: var(--accent); white-space: nowrap; }
+.sec-head .more:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.strengths { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.strengths li { position: relative; padding-left: 22px; color: var(--body); font-size: 15.5px; }
+.strengths li::before { content: ""; position: absolute; left: 4px; top: .72em; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); }
+.strengths b { color: var(--fg); font-weight: 700; }
+
+.skills { display: grid; gap: 0; border-top: 1px solid var(--line); }
+.skills .row { display: grid; grid-template-columns: 140px minmax(0, 1fr); gap: 16px; padding-block: 14px; border-bottom: 1px solid var(--line); align-items: center; }
+.skills .k { font-weight: 700; font-size: 14px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chips span { font-size: 13px; font-weight: 600; color: var(--body); border: 1px solid var(--chip-bd); border-radius: 6px; padding: 3px 9px; }
+
+/* ---------- projects ---------- */
+.project { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 40px; padding-block: 36px; border-top: 1px solid var(--line); }
+.project:first-of-type { border-top: none; padding-top: 0; }
+.p-side h3 { margin: 0 0 6px; font-size: 21px; line-height: 1.3; font-weight: 800; letter-spacing: -0.02em; }
+.p-side .p-sub { margin: 0 0 6px; font-size: 14px; color: var(--body); font-weight: 600; }
+.p-side .period { font-size: 13px; color: var(--muted); font-weight: 600; margin: 0 0 18px; }
+.p-links { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; }
+.p-links a { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 650; }
+.p-links a svg { width: 15px; height: 15px; flex: none; }
+.p-links a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.p-links a.pf { color: var(--accent); }
+.p-summary { margin: 0 0 14px; font-size: 15.5px; font-weight: 650; }
+.p-meta { margin: 0 0 22px; padding: 14px 16px; background: var(--card); border-radius: 10px; display: grid; gap: 6px; font-size: 14px; color: var(--body); }
+.p-meta div { display: grid; grid-template-columns: 64px minmax(0, 1fr); gap: 10px; }
+.p-meta dt { font-weight: 700; color: var(--fg); }
+.p-meta dd { margin: 0; }
+.item { margin-top: 22px; }
+.item h4 { margin: 0 0 8px; font-size: 16.5px; font-weight: 750; letter-spacing: -0.01em; }
+.item h4 a:hover { color: var(--accent); }
+.item h4 a::after { content: " →"; color: var(--muted); font-weight: 600; font-size: 14px; }
+.psr { display: grid; gap: 6px; margin: 0; }
+.psr div { display: grid; grid-template-columns: 38px minmax(0, 1fr); gap: 8px; font-size: 14.5px; color: var(--body); }
+.psr dt { font-weight: 700; font-size: 13px; padding-top: 1px; }
+.psr dt.p { color: var(--bad); }
+.psr dt.s { color: var(--accent); }
+.psr dt.r { color: var(--ok); }
+.psr dd { margin: 0; }
+.psr strong { color: var(--fg); font-weight: 700; }
+
+/* ---------- timeline (education etc.) ---------- */
+.tl { display: grid; gap: 0; }
+.tl .row { display: grid; grid-template-columns: 240px minmax(0, 1fr); gap: 40px; padding-block: 16px; border-top: 1px solid var(--line); }
+.tl .row:first-child { border-top: none; padding-top: 0; }
+.tl h3 { margin: 0 0 2px; font-size: 16px; font-weight: 750; }
+.tl .when { font-size: 13px; color: var(--muted); font-weight: 600; }
+.tl p { margin: 0; color: var(--body); font-size: 14.5px; }
+.tl p b { color: var(--fg); font-weight: 700; }
+.two { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; }
+
+/* ---------- portfolio CTA ---------- */
+.cta { background: var(--dark-bg); color: var(--dark-fg); padding-block: 64px; }
+.cta-in { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+.cta .eyebrow { color: #8b8e95; }
+.cta h2 { margin: 8px 0 8px; font-size: clamp(24px, 3.4vw, 34px); font-weight: 800; letter-spacing: -0.02em; line-height: 1.3; }
+.cta p { margin: 0; color: #b9bbc1; font-size: 15px; max-width: 34em; }
+.cta-btn { display: inline-flex; align-items: center; gap: 10px; background: #f4f4f5; color: #0c0c0d; font-weight: 750; font-size: 16px; padding: 15px 24px; border-radius: 999px; white-space: nowrap; }
+.cta-btn:hover { background: #ffffff; }
+.cta-btn svg { width: 18px; height: 18px; }
+footer { padding-block: 26px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+footer .ft-pdf { text-decoration: underline; text-underline-offset: 3px; }
+footer .ft-pdf:hover { color: var(--fg); }
+
+@media (max-width: 760px) {
+  .hero { padding-block: 48px 40px; }
+  section.block { padding-block: 44px; }
+  .project, .tl .row { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .p-links { flex-direction: row; flex-wrap: wrap; gap: 14px; }
+  .p-side .period { margin-bottom: 10px; }
+  .skills .row { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .cta-in { flex-direction: column; align-items: flex-start; }
+}
+
+/* ---------- print: A4 resume ---------- */
+@page { size: A4; margin: 14mm 14mm 16mm; }
+@media print {
+  :root { --bg: #fff; --fg: #111214; --body: #3c3e44; --muted: #74767c; --line: #e2e3e6; --card: #f4f5f7; --chip-bd: #cfd1d6; --accent: #2457d6; --accent-soft: #eaf0fd; --ok: #0b7a47; --bad: #c2412d; --wrap: 100%; color-scheme: light; }
+  html { scroll-padding-top: 0; }
+  body { font-size: 10pt; line-height: 1.55; }
+  .pad { padding-left: 0; padding-right: 0; }
+  .topbar, .cta, footer, .no-print { display: none !important; }
+  .hero { padding-block: 0 16px; }
+  .hero h1 { font-size: 28pt; margin-top: 0; }
+  .hero .role { margin-bottom: 12px; font-size: 12pt; }
+  .hero .lead { font-size: 13pt; }
+  .tags { margin-bottom: 12px; }
+  .contact a { padding: 3px 10px; font-size: 9pt; }
+  .contact a.primary { background: none; color: var(--fg); border-color: var(--chip-bd); }
+  section.block { padding-block: 18px; }
+  .sec-head { margin-bottom: 12px; }
+  .sec-head h2 { font-size: 14pt; }
+  .sec-head .more { display: none; }
+  .sec-head { break-after: avoid-page; page-break-after: avoid; }
+  .tl .row { grid-template-columns: 150px minmax(0, 1fr); gap: 18px; }
+  .project { display: block; padding-block: 14px; }
+  .p-side { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; break-after: avoid-page; }
+  .p-side h3 { font-size: 13pt; margin: 0; }
+  .p-side .period { margin: 0; }
+  .p-links { display: flex; flex-direction: row; flex-wrap: wrap; flex-basis: 100%; gap: 2px 14px; margin-top: 2px; }
+  .p-links a { font-size: 8.5pt; color: var(--body); }
+  .p-links a.pf { color: var(--accent); }
+  .p-links a svg { width: 10px; height: 10px; }
+  /* 페이지 나눔: 프로젝트는 새 쪽에서 시작하고, 제목만 페이지 끝에 남지 않게 */
+  #projects, .project + .project { break-before: page; page-break-before: always; }
+  .p-side { break-inside: avoid; }
+  .sec-head + *, .p-summary + .p-meta { break-before: avoid-page; page-break-before: avoid; }
+  #history, #history ~ section.block { break-inside: avoid-page; page-break-inside: avoid; }
+  .p-meta { padding: 8px 12px; margin-bottom: 10px; }
+  .item { margin-top: 12px; break-inside: avoid; }
+  .item h4 a::after { content: none; }
+  .p-meta, .tl .row, .skills .row { break-inside: avoid; }
+  .psr div, .tl p, .p-meta, .strengths li { font-size: 9.5pt; }
+}
+</style>
+</head>
+<body>
+<header class="topbar pad">
+  <a href="#top" class="tb-name">한광훈 <span>Game Client Programmer</span></a>
+  <nav aria-label="이력서 목차">
+    <a class="tb-sec" href="#strengths">핵심 역량</a>
+    <a class="tb-sec" href="#skills">기술</a>
+    <a class="tb-sec" href="#projects">프로젝트</a>
+    <a class="tb-sec" href="#history">이력</a>
+    <a class="tb-pdf" href="resume.pdf" download="한광훈_이력서.pdf" title="이력서 PDF 다운로드 (A4)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>PDF</a>
+    <a class="tb-pf" href="portfolio.html">포트폴리오 →</a>
+  </nav>
+</header>
+
+<main id="top">
+  <section class="hero pad" aria-labelledby="name">
+    <div class="eyebrow">Resume</div>
+    <h1 id="name">한광훈</h1>
+    <p class="role">게임 클라이언트 프로그래머 (Unreal C++)</p>
+    <p class="lead">복잡한 시스템을 모듈로 분리하고 테스트로 검증하며 완성하는 게임 클라이언트 프로그래머입니다.</p>
+    <ul class="tags" aria-label="키워드">
+      <li>#C++ 시스템 설계</li><li>#게임 수학</li><li>#디버깅</li><li>#자동화 테스트</li>
+    </ul>
+    <div class="contact">
+      <a class="primary" href="portfolio.html">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+        포트폴리오 보기
+      </a>
+      <a class="no-print" href="resume.pdf" download="한광훈_이력서.pdf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        이력서 PDF 다운로드
+      </a>
+      <a href="mailto:kpo9101@gmail.com">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+        kpo9101@gmail.com
+      </a>
+      <a href="https://github.com/kpo9101" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+        github.com/kpo9101
+      </a>
+    </div>
+  </section>
+
+  <section class="block pad" id="strengths" aria-labelledby="h-strengths">
+    <div class="sec-head"><h2 id="h-strengths">핵심 역량</h2></div>
+    <ul class="strengths">
+      <li>UE5.7·C++로 축제 경영 시뮬레이션의 시설 배치 엔진을 맡아, <b>OBB·SAT 충돌 판정</b>으로 임의 각도 회전 배치의 겹침 오탐을 제거했습니다.</li>
+      <li>묶음 편집·실행 취소를 비용 기록까지 함께 되돌리는 <b>트랜잭션 구조</b>로 설계해, 일부가 실패해도 배치와 자금이 어긋나지 않게 했습니다.</li>
+      <li>지형 수정 없이 WorldSubsystem으로 NavMesh 단절 구역의 접근점을 자동 보정해, <b>AI 출구 도달 구역을 65%→100%</b>로 복구했습니다.</li>
+      <li>Win64 Shipping Cook 후 좌표 변형·NavMesh 왜곡의 원인을 찾아 고치고, <b>빌드 무결성 검사와 자동화 테스트 파이프라인</b>을 구축했습니다.</li>
+      <li>협동 보스 레이드 RPG에서 역할 편향 없는 MVP 산식과 오버킬·오버힐을 걸러낸 집계 구조를 <b>순수 함수로 분리해 단위 테스트</b>로 검증했습니다.</li>
+    </ul>
+  </section>
+
+  <section class="block pad" id="skills" aria-labelledby="h-skills">
+    <div class="sec-head"><h2 id="h-skills">기술</h2></div>
+    <div class="skills">
+      <div class="row"><div class="k">언어·엔진</div><div class="chips"><span>C++</span><span>Unreal Engine 5.7</span><span>Blueprint</span></div></div>
+      <div class="row"><div class="k">게임플레이</div><div class="chips"><span>GAS</span><span>Navigation</span><span>Enhanced Input</span><span>Niagara</span></div></div>
+      <div class="row"><div class="k">UI · 네트워크</div><div class="chips"><span>UMG</span><span>CommonUI</span><span>Slate</span><span>EOS</span><span>Online Subsystem</span></div></div>
+      <div class="row"><div class="k">검증 · 도구</div><div class="chips"><span>Automation Test</span><span>Python</span><span>PowerShell</span><span>Git · Git LFS</span><span>Visual Studio</span><span>Blender</span></div></div>
+    </div>
+  </section>
+
+  <section class="block pad" id="projects" aria-labelledby="h-projects">
+    <div class="sec-head"><h2 id="h-projects">프로젝트</h2><a class="more no-print" href="portfolio.html">포트폴리오에서 자세히 보기 →</a></div>
+
+    <article class="project" aria-labelledby="p-ff">
+      <div class="p-side">
+        <h3 id="p-ff">Festa Fiesta! — 축제 경영 시뮬레이션</h3>
+        <p class="period">2026.08 ~ 2026.10 (3개월)</p>
+        <div class="p-links">
+          <a class="pf" href="portfolio.html#festa">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+            포트폴리오
+          </a>
+          <a href="https://github.com/NBcampUnrealTrack/8th-Team13-Final-Project" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+            GitHub
+          </a>
+          <a href="https://youtu.be/olpAoV4WH7Y" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="m10 9 5 3-5 3z" fill="currentColor"/></svg>
+            시연 영상
+          </a>
+          <a href="https://teamsparta.notion.site/8-13-Festa-Fiesta-3b12dc3ef514808a9247c952c9ecf639" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></svg>
+            프로젝트 브로셔
+          </a>
+        </div>
+      </div>
+      <div class="p-body">
+        <p class="p-summary">시설 배치·군중 AI·경제를 관리하는 Unreal 기반 싱글 플레이 축제 경영 시뮬레이션</p>
+        <dl class="p-meta">
+          <div><dt>규모·역할</dt><dd>7인 프로젝트 · 레벨·시설 시스템 개발, 패키징 매니저</dd></div>
+          <div><dt>담당</dt><dd>FF_ZoneSystem 플러그인 설계, 시설 배치·회전 기하 엔진, 묶음 편집·실행 취소, 존 접근점 자동 보정, 건축 모드 UI, Win64 패키징 안정화</dd></div>
+          <div><dt>기술</dt><dd>Unreal Engine 5.7.4, C++, Blueprint, UMG, CommonUI, Navigation, Enhanced Input, Python, PowerShell</dd></div>
+        </dl>
+
+        <div class="item">
+          <h4><a href="portfolio.html#festa">OBB·SAT 기반 임의 각도 회전 배치 엔진</a></h4>
+          <dl class="psr">
+            <div><dt class="p">문제</dt><dd>90도 단위 회전만 지원하고 배치 영역을 축정렬 사각형(AABB)으로만 판정해, 해변에 시설을 비스듬히 놓을 수 없고 45도 회전 시설끼리 겹침 오탐이 발생했습니다.</dd></div>
+            <div><dt class="s">해결</dt><dd>OBB 기하 연산을 별도 모듈로 분리하고 AABB 1차 필터 → SAT 정밀 판정의 2단계로 구성, 회전값은 정수(0.01도 단위)로 바꾸고 90도 각도는 격자 정렬이 유지되도록 스냅 처리했습니다.</dd></div>
+            <div><dt class="r">결과</dt><dd>기존·신규 판정 등가성 회귀 테스트와 45도 오탐 테스트를 추가해 <strong>테스트 기준 오탐 0건</strong>, 지원 회전을 <strong>4방향 → 임의 각도</strong>로 확대했습니다.</dd></div>
+          </dl>
+        </div>
+
+        <div class="item">
+          <h4><a href="portfolio.html#festa">묶음 편집과 실행 취소 — 시설 상태와 비용을 함께 되돌리는 구조</a></h4>
+          <dl class="psr">
+            <div><dt class="p">문제</dt><dd>여러 시설로 만든 먹거리 거리 등을 하나씩 다시 배치해야 했고, 묶음 중 일부만 적용되거나 실행 취소 시 시설과 비용이 어긋날 위험이 있었습니다.</dd></div>
+            <div><dt class="s">해결</dt><dd>상대 위치를 유지한 이동·회전·복사 명령을 만들고, 비용·구획 규칙을 '사전검사 → 임시적용 → 확정/복구' 인터페이스로 연결해 실패 시 역순 복구했습니다.</dd></div>
+            <div><dt class="s">해결</dt><dd>실행 취소는 현재 가격이 아닌 작업 당시의 지불·환급 기록으로 되돌리고(최근 64개), 배치 설계도는 이력과 분리해 저장·재사용하게 했습니다.</dd></div>
+            <div><dt class="r">결과</dt><dd>묶음 편집·실행 취소·설계도 저장 관련 <strong>자동화 테스트 174개 통과(실패 0)</strong>로 부분 적용·비용 불일치 시나리오를 검증했습니다.</dd></div>
+          </dl>
+        </div>
+
+        <div class="item">
+          <h4><a href="portfolio.html#festa">존 접근점 자동 보정 WorldSubsystem</a></h4>
+          <dl class="psr">
+            <div><dt class="p">문제</dt><dd>최대 582cm 단차가 이어진 지형에서 NavMesh가 끊기고, 구역 모서리 한 점을 대표점으로 써서 걸어갈 수 있는 구역도 도달 불가로 오판정됐습니다.</dd></div>
+            <div><dt class="s">해결</dt><dd>지형 수정 없이 게임·PIE 월드 전용 WorldSubsystem을 만들어, 접근점 없는 구역 내부를 격자 샘플링하고 ProjectPointToNavigation·GetPathLength로 경로가 있는 점을 주입했습니다.</dd></div>
+            <div><dt class="r">결과</dt><dd>OnWorldBeginPlay 시점에 첫 AI 결정 전 보정을 끝내고 실패 구역은 좌표와 함께 리포트, <strong>출구 도달 가능 구역 약 65% → 100%</strong>, 격자 정렬에 따른 결과 편차 <strong>14~16개 → 0개</strong>.</dd></div>
+          </dl>
+        </div>
+
+        <div class="item">
+          <h4><a href="portfolio.html#festa">Win64 Shipping 패키징 안정화 및 자동 검증 파이프라인</a></h4>
+          <dl class="psr">
+            <div><dt class="p">문제</dt><dd>Shipping Cook 후 구역 좌표가 에디터와 달라지고, 카메라 시작 높이와 군중 입구 지면 처리에 오류가 생겼습니다.</dd></div>
+            <div><dt class="s">해결</dt><dd>에디터 전용 부모에 붙어 Cook 중 변형된 런타임 구역 13개를 월드 좌표를 유지한 채 분리하고 부모 체인 검사를 추가, 주차장 메시는 삼각형 충돌로 바꿔 NavMesh를 재생성했습니다.</dd></div>
+            <div><dt class="r">결과</dt><dd>빌드 전용 DDC와 배포 ZIP SHA-256 검사를 자동화해 <strong>Cook 전후 구역 좌표 오차 0</strong>, 프로젝트 전체 <strong>자동화 테스트 1,148개 통과</strong>, <strong>배포 파일 100개 해시 전수 일치</strong>.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </article>
+
+    <article class="project" aria-labelledby="p-lb">
+      <div class="p-side">
+        <h3 id="p-lb">LEFT BEHIND — 협동 보스 레이드 액션 RPG</h3>
+        <p class="period">2026.06 ~ 2026.07 (2개월)</p>
+        <div class="p-links">
+          <a class="pf" href="portfolio.html#leftbehind">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg>
+            포트폴리오
+          </a>
+          <a href="https://github.com/NBcampUnrealTrack/8th-Team26-CH4-Project" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.71 1.26 3.37.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.38-5.26 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z"/></svg>
+            GitHub
+          </a>
+        </div>
+      </div>
+      <div class="p-body">
+        <p class="p-summary">EOS 기반 3인칭 협동 보스 레이드 액션 RPG의 멀티플레이 세션·레이드 결과 시스템 개발</p>
+        <dl class="p-meta">
+          <div><dt>규모</dt><dd>5인 프로젝트</dd></div>
+          <div><dt>담당</dt><dd>EOS 멀티플레이 세션 설계, 방 생성·이름 중복 검증, 레이드 MVP 선정 알고리즘, 스코어보드 복제 구조, 자동화 테스트 작성</dd></div>
+          <div><dt>기술</dt><dd>Unreal Engine 5.7, C++, GAS, EOS, Online Subsystem, Slate, PowerShell</dd></div>
+        </dl>
+
+        <div class="item">
+          <h4><a href="portfolio.html#leftbehind">역할 편향 없는 레이드 MVP 선정 산식</a></h4>
+          <dl class="psr">
+            <div><dt class="p">문제</dt><dd>누적 피해량만으로 MVP를 뽑아, 피해와 회복의 단위·규모 차이 때문에 힐러가 구조적으로 선정될 수 없었습니다.</dd></div>
+            <div><dt class="s">해결</dt><dd>산식을 PlayerState와 분리된 순수 함수로 만들고, 역할별 최댓값 기준 0~1 정규화 후 주 기여 0.8·보조 0.2로 가중합, 동점은 사망 수 → 주 기여 → PlayerId 순으로 안정 정렬했습니다.</dd></div>
+            <div><dt class="r">결과</dt><dd>Formula·RoleFairness·ZeroContribution·InvalidStats·TieBreaks <strong>자동화 테스트 5종</strong>으로 역할 공정성, 결과 결정성, NaN·음수 입력 방어를 검증했습니다.</dd></div>
+          </dl>
+        </div>
+
+        <div class="item">
+          <h4><a href="portfolio.html#leftbehind">오버킬·오버힐을 걸러낸 스코어보드 집계</a></h4>
+          <dl class="psr">
+            <div><dt class="p">문제</dt><dd>GAS가 HP 적용 전 수치를 그대로 통계에 반영해, 보스 오버킬과 파티원 오버힐이 실제 HP 변화보다 크게 집계됐습니다.</dd></div>
+            <div><dt class="s">해결</dt><dd>PreGameplayEffectExecute에서 적용 전 수치를 0~MaxHealth로 제한해 실제 변화량을 구하고, 서버 권한·전투 중·0이 아닌 변화만 집계해 중복과 자기 회복을 제외했습니다.</dd></div>
+            <div><dt class="r">결과</dt><dd>피해·회복 통계와 이벤트 브로드캐스트를 <strong>실제 HP 변화량 기준으로 통일</strong>해 과대 집계를 제거했습니다.</dd></div>
+          </dl>
+        </div>
+
+        <div class="item">
+          <h4><a href="portfolio.html#leftbehind">EOS 세션 방 이름 검증·중복 방지</a></h4>
+          <dl class="psr">
+            <div><dt class="p">문제</dt><dd>방장 닉네임으로만 방을 구분해 같은 닉네임의 방을 구별할 수 없고, 방 이름을 지정할 수도 없었습니다.</dd></div>
+            <div><dt class="s">해결</dt><dd>방 이름 정규화(공백 제거, 한글·영문·숫자 2~24자)와 세션 속성 광고를 추가하고, 생성 전 같은 이름을 먼저 조회하는 2단계 플로우를 구현했습니다.</dd></div>
+            <div><dt class="r">결과</dt><dd>같은 이름의 방 생성을 <strong>사전 조회로 차단</strong>하고 레이드 중에도 이름 점유를 유지했으며, 방 이름 검증 자동화 테스트를 추가했습니다.</dd></div>
+          </dl>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="block pad" id="history" aria-labelledby="h-edu">
+    <div class="sec-head"><h2 id="h-edu">교육</h2></div>
+    <div class="tl">
+      <div class="row">
+        <div><h3>내일배움캠프 Unreal 트랙 8기</h3><div class="when">2026.02.23 ~ 2026.10.20</div></div>
+        <p>C++·Unreal Engine 5 기반 게임 클라이언트 개발 과정. 5인 멀티플레이 RPG(LEFT BEHIND)와 7인 경영 시뮬레이션(Festa Fiesta!) 팀 프로젝트를 수행했습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block pad" aria-labelledby="h-act">
+    <div class="sec-head"><h2 id="h-act">대외활동</h2></div>
+    <div class="tl">
+      <div class="row">
+        <div><h3>이븐아이 게임톤</h3><div class="when">2024.06 ~ 2024.08 (3개월)</div></div>
+        <p><b>게임 기획 담당.</b> 몬스터·캐릭터·스킬 데미지 데이터테이블을 설계하며 데이터 기반 작업 방식을 익혔고, 기획 문서를 PPT·Word로 정리해 팀의 작업 기준을 공유했습니다.</p>
+      </div>
+      <div class="row">
+        <div><h3>2024 울산 게임 기획 공모전</h3><div class="when">2024.08</div></div>
+        <p>울산의 주요 시설과 고래를 활용한 퍼즐 게임을 기획했습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block pad" aria-labelledby="h-work">
+    <div class="sec-head"><h2 id="h-work">기타 경력</h2></div>
+    <div class="tl">
+      <div class="row">
+        <div><h3>KS한국고용정보</h3><div class="when">2025.01 ~ 2026.01 (1년 1개월)</div></div>
+        <p><b>고객 상담원 · 국민카드 인바운드</b> — 고객 문의의 원인을 파악해 처리하며 요구사항을 정확히 듣고 전달하는 커뮤니케이션 역량을 길렀습니다.</p>
+      </div>
+      <div class="row">
+        <div><h3>퍼틴</h3><div class="when">2023.08 ~ 2024.06 (11개월)</div></div>
+        <p><b>매장 직원</b> — 홀 서빙·조리·계산을 모두 맡아 혼자 매장을 운영할 수 있을 만큼 업무를 익혔습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block pad" aria-labelledby="h-school">
+    <div class="sec-head"><h2 id="h-school">학력</h2></div>
+    <div class="tl">
+      <div class="row">
+        <div><h3>유성고등학교</h3><div class="when">2017.03 ~ 2020.01</div></div>
+        <p>자연계열 졸업</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta pad" aria-labelledby="h-cta">
+    <div class="cta-in">
+      <div>
+        <div class="eyebrow">Portfolio</div>
+        <h2 id="h-cta">설계 그림·코드·트러블슈팅은<br>포트폴리오에서 자세히 볼 수 있습니다</h2>
+        <p>Festa Fiesta! 건축 플러그인 구조와 트러블슈팅 9건, LEFT BEHIND 멀티플레이 트러블슈팅 7건을 화면·다이어그램·코드와 함께 정리했습니다.</p>
+      </div>
+      <a class="cta-btn" href="portfolio.html">
+        포트폴리오 보러 가기
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </section>
+</main>
+
+<footer class="pad">
+  <span>© 2026 한광훈 · kpo9101@gmail.com</span>
+  <a class="ft-pdf" href="resume.pdf" download="한광훈_이력서.pdf">이력서 PDF 다운로드</a>
+</footer>
+</body>
+</html>
