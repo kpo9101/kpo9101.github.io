@@ -135,7 +135,7 @@
   }
   function loadPreview() {
     previewReady = false;
-    frame.src = (previewMode === 'web' ? 'index.html' : 'pdf.html') + '?preview';
+    frame.src = (previewMode === 'web' ? 'portfolio.html' : 'pdf.html') + '?preview';
     overflowEl.textContent = '';
     Array.prototype.forEach.call(document.querySelectorAll('[data-pv]'), function (b) { b.setAttribute('aria-pressed', b.getAttribute('data-pv') === previewMode ? 'true' : 'false'); });
   }

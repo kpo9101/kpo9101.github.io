@@ -1,4 +1,4 @@
-/* 포트폴리오 렌더러 — content.json을 읽어 웹(index.html) 또는 16:9 PDF 화면(pdf.html)을 그립니다.
+/* 포트폴리오 렌더러 — content.json을 읽어 웹(portfolio.html) 또는 16:9 PDF 화면(pdf.html)을 그립니다.
    글·숫자·이미지는 content.json(또는 edit.html)에서 고치고, 이 파일은 손대지 않아도 됩니다. */
 (function () {
   'use strict';
@@ -223,7 +223,7 @@
     if (MODE === 'web') {
       var links = '<a href="#about">About</a>' + (c.pages || []).filter(function (p) { return p.type === 'intro' && p.id; }).map(function (p) {
         return '<a href="#' + esc(p.id) + '">' + esc(p.title) + '</a>';
-      }).join('') + '<a href="#contact">Contact</a><a href="pdf.html">PDF</a>';
+      }).join('') + '<a href="#contact">Contact</a><a href="pdf.html">PDF</a><a href="./" class="tb-resume">← 이력서</a>';
       app.innerHTML = '<header class="topbar"><a href="#top" class="tb-name">' + esc(c.profile.name) + ' <span>' + esc(c.profile.navRole || '') + '</span></a><nav>' + links + '</nav></header><main>' + pages + '</main>';
     } else {
       app.innerHTML = pages;
