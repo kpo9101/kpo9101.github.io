@@ -1,0 +1,47 @@
+# 이력서(index.html)를 고치면 내려받기용 PDF(resume.pdf)를 자동으로 다시 만들어 커밋합니다.
+# 수동 실행: 저장소 Actions 탭 → "이력서 PDF 만들기" → Run workflow
+name: 이력서 PDF 만들기
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - index.html
+      - fonts/PretendardVariable.woff2
+      - .github/scripts/resume_pdf.py
+      - .github/workflows/resume-pdf.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: resume-pdf
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: 도구 설치
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq qpdf
+          pip install -q playwright fonttools brotli pypdf
+          python -m playwright install --with-deps chromium
+
+      - name: PDF 만들기
+        run: python .github/scripts/resume_pdf.py . resume.pdf
+
+      - name: 바뀌었으면 커밋
+        run: |
+          git add resume.pdf
+          if git diff --cached --quiet; then echo "변경 없음"; exit 0; fi
+          git -c user.name="HanKwangHoon" -c user.email="kpo9101@gmail.com" commit -m "이력서 PDF 다시 만들기 (index.html 기준)"
+          git push
