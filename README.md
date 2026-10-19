@@ -1,6 +1,6 @@
 # 한광훈 이력서 · 포트폴리오
 
-- 이력서(메인): https://kpo9101.github.io — 위쪽 막대 "PDF"·첫 화면 "이력서 PDF 다운로드"로 `resume.pdf`(A4 4쪽)를 바로 받음
+- 이력서(메인): https://kpo9101.github.io — 위쪽 막대 "PDF"·첫 화면 "이력서 PDF 다운로드"로 `resume.pdf`(직접 제공한 이력서 수정본)를 바로 받음
 - 포트폴리오: https://kpo9101.github.io/portfolio.html
 - PDF 화면: https://kpo9101.github.io/pdf.html (버튼 "PDF로 저장" → 인쇄 창에서 대상 "PDF로 저장")
 - 편집 화면: https://kpo9101.github.io/edit.html
@@ -13,7 +13,8 @@
 
 편집 화면 없이 고치려면 이 저장소의 `content.json`을 GitHub 웹에서 직접 수정해도 됩니다.
 이력서(`index.html`)는 content.json과 별개인 단일 HTML 파일이라 직접 고칩니다.
-`index.html`을 고쳐 main에 올리면 GitHub Actions("이력서 PDF 만들기")가 2~4분 안에 `resume.pdf`를 다시 만들어 커밋합니다.
+내려받기용 이력서를 바꾸려면 새 PDF를 `resume.pdf`로 교체해 main에 올립니다. 현재 파일은 `한광훈_이력서_수정본.pdf` 원본입니다.
+`index.html`을 고쳐 main에 올리면 GitHub Actions("이력서 PDF 만들기")가 2~4분 안에 웹 인쇄본 `resume-web.pdf`를 다시 만들어 커밋합니다. 내려받기용 `resume.pdf`는 변경하지 않습니다.
 수동으로 다시 만들려면 Actions 탭 → "이력서 PDF 만들기" → Run workflow.
 
 ## 파일 구성
@@ -22,8 +23,9 @@
 | --- | --- |
 | `content.json` | 포트폴리오의 모든 글·숫자·이미지 경로·코드 (고치는 곳은 여기 하나) |
 | `index.html` | 웹 이력서 (메인) — 인쇄 스타일이 A4 이력서 레이아웃 |
-| `resume.pdf` | 내려받기용 이력서 PDF (`index.html` 인쇄 레이아웃 그대로, 링크 클릭 가능) — 직접 고치지 말고 자동 생성에 맡김 |
-| `.github/workflows/resume-pdf.yml`, `.github/scripts/resume_pdf.py` | `index.html`이 바뀌면 `resume.pdf`를 다시 만드는 자동 작업 |
+| `resume.pdf` | 내려받기용 이력서 PDF — 직접 제공한 수정본 원본을 유지하며, 새 이력서는 이 파일을 교체 |
+| `resume-web.pdf` | `index.html` 인쇄 레이아웃으로 자동 생성하는 웹 이력서 PDF |
+| `.github/workflows/resume-pdf.yml`, `.github/scripts/resume_pdf.py` | `index.html`이 바뀌면 `resume-web.pdf`를 다시 만드는 자동 작업 |
 | `portfolio.html` + `pf.css` + `pf.js` | 웹 포트폴리오 — 디자인(`pf.css`)과 화면 그리기·모션(`pf.js`) |
 | `pdf.html` + `style.css` + `app.js` | 16:9 PDF용 화면 (넘치는 페이지는 빨갛게 표시) |
 | `edit.html`, `editor.js` | 편집 화면 (미리보기는 portfolio.html / pdf.html을 그대로 씀) |

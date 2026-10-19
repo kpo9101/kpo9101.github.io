@@ -1,4 +1,4 @@
-"""index.html(웹 이력서)을 A4 PDF(resume.pdf)로 만듭니다.
+"""index.html(웹 이력서)을 A4 PDF(resume-web.pdf)로 만듭니다.
 
 - 브라우저 '인쇄 → PDF로 저장'과 같은 인쇄 스타일을 씁니다.
 - 링크가 실제 주소를 가리키도록 https://kpo9101.github.io/ 로 열고, 파일은 저장소에서 바로 읽습니다.
@@ -15,7 +15,7 @@ from playwright.async_api import async_playwright
 from pypdf import PdfWriter
 
 SITE = pathlib.Path(sys.argv[1] if len(sys.argv) > 1 else '.').resolve()
-OUT = pathlib.Path(sys.argv[2] if len(sys.argv) > 2 else SITE / 'resume.pdf')
+OUT = pathlib.Path(sys.argv[2] if len(sys.argv) > 2 else SITE / 'resume-web.pdf')
 ORIGIN = 'https://kpo9101.github.io/'
 VARFONT = SITE / 'fonts' / 'PretendardVariable.woff2'
 
