@@ -1,6 +1,7 @@
-# 한광훈 포트폴리오
+# 한광훈 이력서 · 포트폴리오
 
-- 사이트: https://kpo9101.github.io
+- 이력서(메인): https://kpo9101.github.io
+- 포트폴리오: https://kpo9101.github.io/portfolio.html
 - PDF 화면: https://kpo9101.github.io/pdf.html (버튼 "PDF로 저장" → 인쇄 창에서 대상 "PDF로 저장")
 - 편집 화면: https://kpo9101.github.io/edit.html
 
@@ -11,18 +12,28 @@
 3. 처음 한 번은 편집 화면의 **설정**에서 GitHub 토큰(Fine-grained, 이 저장소만, Contents: Read and write)을 넣어야 합니다.
 
 편집 화면 없이 고치려면 이 저장소의 `content.json`을 GitHub 웹에서 직접 수정해도 됩니다.
+이력서(`index.html`)는 content.json과 별개인 단일 HTML 파일이라 직접 고칩니다.
 
 ## 파일 구성
 
 | 파일 | 역할 |
 | --- | --- |
-| `content.json` | 모든 글·숫자·이미지 경로·코드 (고치는 곳은 여기 하나) |
-| `index.html` | 웹 포트폴리오 |
-| `pdf.html` | 16:9 PDF용 화면 (넘치는 페이지는 빨갛게 표시) |
-| `edit.html`, `editor.js` | 편집 화면 |
-| `app.js` | content.json을 화면으로 그리는 코드 |
-| `diagrams.js` | 구조도 등 고정 다이어그램(SVG) |
-| `style.css` | 디자인 |
-| `img/`, `fonts/` | 이미지와 글꼴 |
+| `content.json` | 포트폴리오의 모든 글·숫자·이미지 경로·코드 (고치는 곳은 여기 하나) |
+| `index.html` | 웹 이력서 (메인) |
+| `portfolio.html` + `pf.css` + `pf.js` | 웹 포트폴리오 — 디자인(`pf.css`)과 화면 그리기·모션(`pf.js`) |
+| `pdf.html` + `style.css` + `app.js` | 16:9 PDF용 화면 (넘치는 페이지는 빨갛게 표시) |
+| `edit.html`, `editor.js` | 편집 화면 (미리보기는 portfolio.html / pdf.html을 그대로 씀) |
+| `diagrams.js` | 구조도 등 고정 다이어그램(SVG) — 웹·PDF 공용 |
+| `vendor/gsap/` | 모션 라이브러리 GSAP 3.15 (ScrollTrigger·SplitText·ScrambleText·DrawSVG) |
+| `fonts/` | Archivo(영문 제목) · JetBrains Mono(라벨·코드) · Pretendard 전체본(PDF 화면용). 웹 포트폴리오의 한글 Pretendard는 jsDelivr의 분할본(필요한 글자 묶음만 받음)을 씀 |
+| `img/` | 이미지 |
 
 글자 꾸미기: `**굵게**`, `~~취소선~~`, `_{아래첨자}`, Enter로 줄바꿈.
+
+## 웹 포트폴리오 디자인 메모
+
+- 콘셉트: 언리얼 에디터 뷰포트. 그래파이트 바탕 + 옅은 격자, 선택된 액터의 주황 외곽선(강조색), 변환 기즈모의 X(빨강)·Y(초록) 축 색, 좌표·파일명 같은 모노스페이스 라벨.
+- 첫 화면: 두 시설 영역(OBB)을 분리축 정리(SAT)로 실시간 판정하는 캔버스 데모. 커서로 시설 B를 옮기고 클릭하면 45° 회전합니다. AABB는 겹치는데 OBB는 떨어져 있으면 `FALSE POSITIVE FILTERED`가 켜집니다.
+- 모션: 화면에 들어올 때 한 번만 짧게 등장(줄 단위 글자 올라옴, 이미지 와이프, 코드 줄 순서 등장, 다이어그램 선 그리기, 수치 카운트업), 문제→해결→결과 진행선은 스크롤에 맞춰 차오름.
+- 운영체제의 '동작 줄이기' 설정, 편집 화면 미리보기, 인쇄에서는 모션이 꺼지고 처음부터 끝난 상태로 보입니다.
+- 색·글꼴·간격은 `pf.css` 맨 위 `:root`에서 한 번에 바꿀 수 있습니다.
