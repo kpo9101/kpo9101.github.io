@@ -57,7 +57,7 @@ sub { font-size: .66em; color: var(--muted); }
 .tag { display: inline-block; font: 600 10px/1.4 var(--f-mono); letter-spacing: .1em; padding: 2px 6px; border: 1px solid currentColor; white-space: nowrap; align-self: flex-start; }
 
 /* 첫 화면 등장 전 잠깐 숨김(스크립트가 3초 안에 풉니다) */
-html.mp .hero-title, html.mp .hero-role, html.mp .hero-meta, html.mp .hero-index, html.mp .hud, html.mp .hero-hint, html.mp .scroll-cue, html.mp .topbar { visibility: hidden; }
+html.mp .hero-title, html.mp .hero-role, html.mp .hero-meta, html.mp .hero-index, html.mp .scroll-cue, html.mp .topbar { visibility: hidden; }
 
 /* ---------------------------------------------------------- 위쪽 막대 */
 .topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; display: flex; align-items: center; gap: 20px; height: calc(var(--tb-h) + env(safe-area-inset-top, 0px)); padding-top: env(safe-area-inset-top, 0px); padding-left: max(var(--pad), env(safe-area-inset-left, 0px)); padding-right: max(var(--pad), env(safe-area-inset-right, 0px)); border-bottom: 1px solid transparent; transition: translate .6s var(--ease), background-color .3s, border-color .3s; }
@@ -100,13 +100,10 @@ html.mp .hero-title, html.mp .hero-role, html.mp .hero-meta, html.mp .hero-index
 .rail a:hover span, .rail a:focus-visible span { opacity: 1; transform: none; }
 @media (min-width: 1200px) and (min-height: 660px) { .rail { display: block; } }
 
-/* ---------------------------------------------------------- 첫 화면 (뷰포트 + SAT 데모) */
-.hero { position: relative; min-height: clamp(660px, 100svh, 1000px); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; isolation: isolate; border-bottom: 1px solid var(--line); background: radial-gradient(60% 55% at 66% 32%, rgba(245, 165, 36, .07), transparent 70%), var(--bg); touch-action: pan-y; }
+/* ---------------------------------------------------------- 첫 화면 (이름 · 소개 · 대표작 바로가기) */
+.hero { position: relative; min-height: clamp(560px, 86svh, 880px); display: flex; flex-direction: column; justify-content: flex-end; overflow: hidden; isolation: isolate; border-bottom: 1px solid var(--line); background: radial-gradient(60% 55% at 66% 32%, rgba(245, 165, 36, .07), transparent 70%), var(--bg); }
 .hero-grid { position: absolute; inset: 0; z-index: -1; background-image: linear-gradient(var(--grid-major) 1px, transparent 1px), linear-gradient(90deg, var(--grid-major) 1px, transparent 1px), linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px; background-position: calc(50% + 0px) 0; -webkit-mask-image: radial-gradient(85% 75% at 62% 36%, #000 25%, transparent 88%); mask-image: radial-gradient(85% 75% at 62% 36%, #000 25%, transparent 88%); }
-canvas.sat { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
 .hero-inner { position: relative; z-index: 2; padding-top: calc(var(--tb-h) + 40px); padding-bottom: clamp(36px, 5vw, 56px); }
-.hero-hint { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; font: 400 11.5px/1.4 var(--f-mono); color: var(--muted); }
-.hero-hint::before { content: ""; width: 7px; height: 7px; border: 1px solid var(--sel); transform: rotate(45deg); flex: none; }
 .hint-touch { display: none; }
 @media (hover: none) { .hint-fine { display: none; } .hint-touch { display: inline; } }
 .hero-role { font: 600 12.5px/1.4 var(--f-mono); letter-spacing: .16em; color: var(--sel); min-height: 1.4em; }
@@ -133,15 +130,6 @@ canvas.sat { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0
 .scroll-cue i { width: 1px; height: 22px; background: linear-gradient(var(--sel), transparent); transform-origin: top; animation: cue 2.2s var(--ease-io) infinite; }
 @keyframes cue { 0% { transform: scaleY(0); } 45% { transform: scaleY(1); transform-origin: top; } 55% { transform: scaleY(1); transform-origin: bottom; } 100% { transform: scaleY(0); transform-origin: bottom; } }
 
-.hud { position: absolute; z-index: 2; top: calc(var(--tb-h) + env(safe-area-inset-top, 0px) + 18px); display: flex; flex-direction: column; gap: 8px; font: 600 10.5px/1.4 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); pointer-events: none; }
-.hud-l { left: calc(max(0px, (100% - var(--wrap) - var(--pad) * 2) / 2) + max(var(--pad), env(safe-area-inset-left, 0px))); }
-.hud-r { right: calc(max(0px, (100% - var(--wrap) - var(--pad) * 2) / 2) + max(var(--pad), env(safe-area-inset-right, 0px))); align-items: flex-end; }
-.hud p { display: flex; align-items: center; gap: 8px; }
-.hud b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
-.hud .rec { width: 6px; height: 6px; border-radius: 50%; background: var(--bad); animation: rec 1.6s steps(1) infinite; }
-@keyframes rec { 50% { opacity: .25; } }
-.hud-xy b { min-width: 6.5ch; text-align: right; }
-.ax-x { color: var(--x); } .ax-y { color: var(--y); }
 .hud-chip { padding: 5px 9px; border: 1px solid var(--line-2); background: rgba(11, 14, 18, .72); transition: border-color .25s, color .25s; }
 .hud-chip i { width: 6px; height: 6px; background: var(--muted); transition: background-color .25s; }
 .hud-chip.ok i { background: var(--ok); } .hud-chip.ok b { color: var(--ok); }
@@ -149,7 +137,24 @@ canvas.sat { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0
 .hud-chip.fp { border-color: var(--sel-line); background: rgba(27, 20, 6, .8); opacity: 0; transform: translateY(-4px); transition: opacity .3s, transform .4s var(--ease); }
 .hud-chip.fp i { background: var(--sel); } .hud-chip.fp b { color: var(--sel); }
 .hud-chip.fp.on { opacity: 1; transform: none; }
-.hud-yaw small, .hud-xy small { color: var(--faint); }
+
+/* 트러블슈팅 01 — 직접 만져 보는 SAT 데모 */
+.satx { position: relative; min-width: 0; background: var(--panel); border: 1px solid var(--line-2); }
+.satx-bar { align-items: center; }
+.satx-btns { display: inline-flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.satx-btns button { padding: 5px 9px; border: 1px solid var(--line-3); background: var(--panel); color: var(--body); font: 600 10.5px/1.2 var(--f-mono); letter-spacing: .02em; cursor: pointer; transition: border-color .2s, color .2s, background-color .2s; }
+.satx-btns button:hover, .satx-btns button:focus-visible { border-color: var(--sel); color: var(--sel); }
+.satx-btns button:active { background: var(--sel-soft); }
+.satx-view { position: relative; }
+.satx-stage { position: relative; aspect-ratio: 16 / 9; overflow: hidden; cursor: crosshair; touch-action: pan-y pinch-zoom; background-color: var(--bg); background-image: linear-gradient(var(--grid-major) 1px, transparent 1px), linear-gradient(90deg, var(--grid-major) 1px, transparent 1px), linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 80px 80px, 80px 80px, 16px 16px, 16px 16px; background-position: -1px -1px; }
+.satx-stage canvas { position: absolute; inset: 0; display: block; width: 100%; height: 100%; outline: none; }
+.satx-stage canvas:focus-visible { box-shadow: inset 0 0 0 1px var(--sel); }
+.satx-hud { position: absolute; top: 10px; right: 10px; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; font: 600 10px/1.4 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); pointer-events: none; }
+.satx-hud p { display: flex; align-items: center; gap: 8px; }
+.satx-hud b, .satx-yaw b { color: var(--fg); font-weight: 600; font-variant-numeric: tabular-nums; }
+.satx-yaw { white-space: nowrap; }
+.satx-yaw small { color: var(--faint); }
+.satx-cap { padding: 11px 12px 12px; border-top: 1px solid var(--line-2); font-size: 13px; line-height: 1.65; color: var(--muted); }
 
 /* ---------------------------------------------------------- 본문 기둥과 섹션 */
 .main { position: relative; max-width: calc(var(--wrap) + var(--pad) * 2); margin-inline: auto; }
@@ -565,10 +570,11 @@ svg.live .ar { animation: dashflow 1.1s linear infinite; }
   .vp-hint { display: inline; }
 }
 @media (max-width: 759px) {
-  .hud-l, .hud .hud-yaw, .scroll-cue { display: none; }
-  .hud-r { top: calc(var(--tb-h) + env(safe-area-inset-top, 0px) + 12px); gap: 6px; }
-  .hud-chip { padding: 4px 7px; font-size: 9.5px; }
-  .hero { min-height: max(620px, 100svh); }
+  .scroll-cue { display: none; }
+  .hero { min-height: max(540px, 82svh); }
+  .satx-hud { position: static; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 6px; padding: 9px 12px; border-top: 1px solid var(--line-2); font-size: 9.5px; }
+  .satx-hud .hud-chip { padding: 4px 7px; }
+  .satx-stage { aspect-ratio: 4 / 3; }
   .hero-id span { display: block; margin: 4px 0 0; }
   .bento { grid-template-columns: minmax(0, 1fr); }
   .b-item, .b-0, .b-1, .b-2, .b-3 { grid-column: 1 / -1; grid-row: auto; }
@@ -602,7 +608,7 @@ svg.live .ar { animation: dashflow 1.1s linear infinite; }
 
 /* 인쇄 — 화면 장식은 빼고 내용만 */
 @media print {
-  .topbar, .rail, .menu, canvas.sat, .hud, .hero-hint, .scroll-cue, .marquee, .lb, .skip { display: none !important; }
+  .topbar, .rail, .menu, .satx-btns, .scroll-cue, .marquee, .lb, .skip { display: none !important; }
   [data-r], [data-r] * { opacity: 1 !important; visibility: visible !important; transform: none !important; clip-path: none !important; }
   .hero { min-height: 0; }
   .tr-flow, .ar-right .viewport { position: static !important; }

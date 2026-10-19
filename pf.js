@@ -161,6 +161,7 @@
     },
     code: function (b) { return codeCard(b); },
     diagram: function (b) {
+      if (b.id === 'sat') return satPanel();
       var svg = (window.PF_DIAGRAMS || {})[b.id] || '';
       return svg ? '<div class="viewport" data-r="diagram" data-diagram="' + esc(b.id) + '"><div class="vp-body diag-scroll">' + svg + '</div></div>' : '';
     },
@@ -216,12 +217,8 @@
       var items = ct ? ct.items || [] : [];
       var title = p.title || 'PORTFOLIO';
       return '<section class="hero" id="top">' +
-        '<div class="hero-grid" aria-hidden="true"></div><canvas class="sat" aria-hidden="true"></canvas>' +
-        '<div class="hud hud-l" aria-hidden="true"><p><i class="rec"></i>VIEWPORT · TOP · <b>SAT DEMO</b></p><p class="hud-xy"><span class="ax-x">X</span><b data-hx>0</b><span class="ax-y">Y</span><b data-hy>0</b><small>cm</small></p></div>' +
-        '<div class="hud hud-r" aria-hidden="true"><p class="hud-chip" data-aabb><i></i><span>AABB</span><b>CLEAR</b></p><p class="hud-chip" data-sat><i></i><span>OBB · SAT</span><b>CLEAR</b></p><p class="hud-chip fp" data-fp><i></i><b>FALSE POSITIVE FILTERED</b></p>' +
-        '<p class="hud-yaw">yaw A <b data-ya>0</b> · B <b data-yb>0</b> <small>×0.01°</small></p></div>' +
+        '<div class="hero-grid" aria-hidden="true"></div>' +
         '<div class="hero-inner wrap">' +
-        '<p class="hero-hint" aria-hidden="true"><span class="hint-fine">커서로 시설 B를 옮기고, 클릭하면 45° 회전합니다</span><span class="hint-touch">화면을 눌러 시설 B를 옮겨 보세요</span></p>' +
         '<p class="hero-role">' + esc(pr.role) + '</p>' +
         '<h1 class="hero-title" aria-label="' + esc(title) + '"><span>' + esc(title) + '</span></h1>' +
         '<div class="hero-meta"><p class="hero-id"><strong>' + esc(pr.name) + '</strong><span>' + esc(pr.navRole || '') + '</span></p><p class="hero-contact">' +
@@ -362,7 +359,8 @@
     cleanups = [];
     if (io) { io.disconnect(); io = null; }
     if (ctx) { ctx.revert(); ctx = null; }
-    if (sat) { sat.destroy(); sat = null; }
+    demos.forEach(function (d) { d.destroy(); });
+    demos = [];
   }
 
   function setup() {
@@ -467,13 +465,15 @@
 
     setupLightbox();
     setupSpot();
-    sat = createSat(app.querySelector('.hero'));
+    Array.prototype.forEach.call(app.querySelectorAll('.satx'), function (box) {
+      var d = createSatDemo(box);
+      if (d) { box.__demo = d; demos.push(d); }
+    });
     if (MOTION) setupMotion();
     else {
       // 모션이 꺼져 있으면 끝난 상태로 바로 보여 줍니다
       Array.prototype.forEach.call(app.querySelectorAll('.step'), function (s) { s.classList.add('on'); });
       Array.prototype.forEach.call(app.querySelectorAll('.cmp'), function (s) { s.classList.add('cooked'); });
-      if (sat) sat.boot();
       root.classList.remove('mp');
     }
   }
@@ -553,65 +553,49 @@
   }
 
   /* =====================================================================
-     첫 화면 SAT 데모 — 두 시설 영역(OBB)을 분리축 정리(SAT)로 실시간 판정합니다.
-     AABB(점선)는 겹치는데 OBB는 떨어져 있으면 '오탐 방지'로 표시합니다.
+     트러블슈팅 01의 SAT 데모 — 두 시설 영역(OBB)을 분리축 정리(SAT)로 실시간 판정합니다.
+     커서로 시설 B를 옮기고 클릭하면 45° 회전합니다(터치는 누른 곳으로 이동 + 회전 버튼).
+     AABB(점선)는 겹치는데 OBB는 떨어져 있으면 '오탐 방지(FALSE POSITIVE FILTERED)'가 켜집니다.
      ===================================================================== */
-  var sat = null;
-  function createSat(hero) {
-    if (!hero) return null;
-    var cv = hero.querySelector('canvas.sat');
+  var demos = [];
+  function satPanel() {
+    return '<div class="satx" data-r="satx">' +
+      '<p class="vp-bar satx-bar"><span>sat_demo</span><span class="satx-yaw">yaw A <b data-ya>4,500</b> · B <b data-yb>4,500</b> <small>×0.01°</small></span><span class="satx-btns">' +
+      '<button type="button" data-sat-rot>↻ B 45° 회전</button><button type="button" data-sat-reset>오탐 상황으로</button></span></p>' +
+      '<div class="satx-view"><div class="satx-stage"><canvas tabindex="0" role="img" aria-label="두 시설 영역의 AABB와 OBB·SAT 판정 비교 데모. 방향키로 시설 B를 옮기고 R 키로 45도 회전합니다."></canvas></div>' +
+      '<div class="satx-hud" aria-hidden="true"><p class="hud-chip" data-aabb><i></i><span>AABB</span><b>HIT</b></p><p class="hud-chip" data-sat><i></i><span>OBB · SAT</span><b>CLEAR</b></p><p class="hud-chip fp" data-fp><i></i><b>FALSE POSITIVE FILTERED</b></p></div>' +
+      '</div>' +
+      '<p class="satx-cap"><span class="hint-fine">커서로 시설 B를 옮기고, 클릭하면 45° 회전합니다. </span><span class="hint-touch">화면을 눌러 시설 B를 옮기고, 회전 버튼으로 돌려 보세요. </span>점선 사각형(AABB)이 겹쳐도 분리축이 있으면 SAT는 설치를 허용합니다.</p></div>';
+  }
+  function createSatDemo(box) {
+    var cv = box.querySelector('canvas'), stage = box.querySelector('.satx-stage');
     if (!cv || !cv.getContext) return null;
     var g = cv.getContext('2d');
     var el = {
-      hx: hero.querySelector('[data-hx]'), hy: hero.querySelector('[data-hy]'), ya: hero.querySelector('[data-ya]'), yb: hero.querySelector('[data-yb]'),
-      aabb: hero.querySelector('[data-aabb]'), sat: hero.querySelector('[data-sat]'), fp: hero.querySelector('[data-fp]')
+      ya: box.querySelector('[data-ya]'), yb: box.querySelector('[data-yb]'),
+      aabb: box.querySelector('[data-aabb]'), sat: box.querySelector('[data-sat]'), fp: box.querySelector('[data-fp]')
     };
     var css = getComputedStyle(root);
-    var C = {
-      sel: css.getPropertyValue('--sel').trim() || '#f5a524',
-      fg: css.getPropertyValue('--fg').trim() || '#e9edf2',
-      muted: css.getPropertyValue('--muted').trim() || '#75808d',
-      ok: css.getPropertyValue('--ok').trim() || '#6fd27c',
-      bad: css.getPropertyValue('--bad').trim() || '#ff5f5f',
-      x: css.getPropertyValue('--x').trim() || '#ff5f5f',
-      y: css.getPropertyValue('--y').trim() || '#6fd27c'
-    };
-    var W = 0, H = 0, DPR = 1, S = 1, cx = 0, cy = 0;
-    var st = {
-      boot: MOTION ? 0 : 1, t: 0, mode: 'auto', idle: 0,
-      a: { x: 0, y: 0, yaw: 0.6 }, b: { x: 0, y: 0, yaw: -0.4 },
-      ptr: null, target: null, spinB: 0, spinGoal: 0
-    };
-    var running = false, visible = true, raf = 0, last = 0, hudT = 0, destroyed = false;
-    var interactive = !PREVIEW;
+    var tok = function (n, d) { return css.getPropertyValue(n).trim() || d; };
+    var C = { sel: tok('--sel', '#f5a524'), fg: tok('--fg', '#e9edf2'), muted: tok('--muted', '#7a8592'), ok: tok('--ok', '#6fd27c'), bad: tok('--bad', '#ff6b6b'), x: tok('--x', '#ff5f5f'), y: tok('--y', '#6fd27c') };
+    // 논리 좌표 640×360 기준으로 그리고 화면 폭에 맞춰 늘립니다.
+    // 시작 배치: 두 시설 모두 45° — AABB는 겹치지만 실제로는 14만큼 떨어져 있는 '오탐' 상황
+    var LW = 640, LH = 360, Q45 = Math.PI / 4;
+    var HOME = { x: 290.4, y: 256.2 };
+    var st = { boot: 1, a: { x: 330, y: 160, yaw: Q45 }, b: { x: HOME.x, y: HOME.y, yaw: Q45 }, tb: { x: HOME.x, y: HOME.y, yaw: Q45 } };
+    var W = 0, H = 0, DPR = 1, S = 1, OY = 0, raf = 0, running = false, last = 0, destroyed = false;
     function size() {
-      var r = hero.getBoundingClientRect();
-      W = r.width; H = r.height;
+      var r = stage.getBoundingClientRect();
+      if (!r.width) return;
+      W = r.width; H = r.height; S = W / LW; OY = Math.max(0, (H / S - LH) / 2);
       DPR = Math.min(2, window.devicePixelRatio || 1);
       cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR);
-      var mobile = W < 760;
-      S = Math.max(0.58, Math.min(1.15, Math.min(W, H * 1.2) / 1120));
-      // 데모가 제목과 겹치지 않도록 제목 위쪽 빈 공간 안에 둡니다
-      var tEl = hero.querySelector('.hero-role') || hero.querySelector('.hero-title');
-      var top = tEl ? tEl.getBoundingClientRect().top - r.top : H * 0.5;
-      var hudR = hero.querySelector('.hud-r');
-      var hudBottom = hudR ? hudR.getBoundingClientRect().bottom - r.top : 120;
-      if (W >= 1100) {
-        cx = W * 0.64;
-        cy = Math.max(56 + 120 * S, Math.min(H * 0.32, top - 150 * S));
-      } else {
-        // 좁은 화면: 오른쪽 위 HUD와 제목 사이 띠의 가운데
-        cx = W * (mobile ? 0.5 : 0.46);
-        cy = Math.max(hudBottom + 90 * S, (hudBottom + top) / 2);
-        cy = Math.min(cy, top - 110 * S);
-      }
-      st.a.x = cx; st.a.y = cy;
-      if (!st.b.x) { st.b.x = cx + 190 * S; st.b.y = cy - 40 * S; }
       draw();
     }
+    function px(n) { return n / S; }
     function obb(x, y, hx, hy, a) {
       var c = Math.cos(a), s = Math.sin(a);
-      return { x: x, y: y, hx: hx, hy: hy, a: a, ux: [c, s], uy: [-s, c],
+      return { x: x, y: y, ux: [c, s], uy: [-s, c],
         pts: [[x + c * hx - s * hy, y + s * hx + c * hy], [x - c * hx - s * hy, y - s * hx + c * hy], [x - c * hx + s * hy, y - s * hx - c * hy], [x + c * hx + s * hy, y + s * hx - c * hy]] };
     }
     function proj(b, ax) {
@@ -619,9 +603,10 @@
       b.pts.forEach(function (p) { var d = p[0] * ax[0] + p[1] * ax[1]; if (d < mn) { mn = d; pmn = p; } if (d > mx) { mx = d; pmx = p; } });
       return { mn: mn, mx: mx, pmn: pmn, pmx: pmx };
     }
+    // 분리축 정리: 두 사각형의 변 법선 4개 중 하나라도 투영 구간이 떨어지면 겹치지 않음
     function test(A, B) {
-      var axes = [A.ux, A.uy, B.ux, B.uy], best = null, mtv = null;
-      axes.forEach(function (ax) {
+      var best = null, mtv = null;
+      [A.ux, A.uy, B.ux, B.uy].forEach(function (ax) {
         var pa = proj(A, ax), pb = proj(B, ax);
         var ov = Math.min(pa.mx, pb.mx) - Math.max(pa.mn, pb.mn);
         if (ov < 0) { if (!best || -ov > best.gap) best = { ax: ax, pa: pa, pb: pb, gap: -ov }; }
@@ -640,200 +625,149 @@
       var n = parseInt(h, 16); return 'rgba(' + (n >> 16 & 255) + ',' + (n >> 8 & 255) + ',' + (n & 255) + ',' + a + ')';
     }
     function easeOutBack(t) { var c1 = 1.4, c3 = c1 + 1; return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2); }
-    function wrapDeg(d) { d = ((d % 360) + 360) % 360; return d >= 180 ? d - 360 : d; }
-    function centi(rad) { return Math.round(wrapDeg(rad * 180 / Math.PI) * 100); }
-    function fmtInt(n) { var s = Math.abs(n).toLocaleString('en-US'); return (n < 0 ? '−' : '') + s; }
-
-    function step(dt) {
-      st.t += dt;
-      var t = st.t, R = 210 * S;
-      if (st.mode === 'auto') {
-        st.a.yaw = 0.62 + t * 0.11;
-        var tx = cx + Math.cos(t * 0.42) * R * 1.05, ty = cy + Math.sin(t * 0.84) * R * 0.5;
-        st.b.x += (tx - st.b.x) * Math.min(1, dt * 2.2);
-        st.b.y += (ty - st.b.y) * Math.min(1, dt * 2.2);
-        st.b.yaw = -0.35 - t * 0.27;
-        st.spinGoal = st.b.yaw; st.spinB = st.b.yaw;
-      } else {
-        // 사용자가 움직이는 동안: A는 45°에 멈추고, B는 커서를 따라가며 클릭할 때마다 45°씩 돕니다
-        var goalA = Math.PI / 4;
-        var ga = nearestTurn(st.a.yaw, goalA);
-        st.a.yaw += (ga - st.a.yaw) * Math.min(1, dt * 5);
-        if (Math.abs(ga - st.a.yaw) < 1e-4) st.a.yaw = ga;
-        st.spinB += (st.spinGoal - st.spinB) * Math.min(1, dt * 9);
-        if (Math.abs(st.spinGoal - st.spinB) < 1e-4) st.spinB = st.spinGoal;
-        st.b.yaw = st.spinB;
-        if (st.target) {
-          st.b.x += (st.target[0] - st.b.x) * Math.min(1, dt * 10);
-          st.b.y += (st.target[1] - st.b.y) * Math.min(1, dt * 10);
-        }
-        st.idle += dt;
-        if (st.idle > 3.2 && !st.ptr) { st.mode = 'auto'; st.t = autoPhaseFor(st.b); }
-      }
-    }
-    function nearestTurn(cur, goal) { var k = Math.round((cur - goal) / (Math.PI / 2)); return goal + k * Math.PI / 2; }
-    function autoPhaseFor() { return st.t; }
-
-    function draw() {
-      if (!W) return;
-      g.setTransform(DPR, 0, 0, DPR, 0, 0);
-      g.clearRect(0, 0, W, H);
-      var k = st.boot, kb = easeOutBack(Math.min(1, k * 1.1));
-      g.globalAlpha = Math.min(1, k * 1.4);
-      var A = obb(st.a.x, st.a.y, 104 * S * kb, 58 * S * kb, st.a.yaw);
-      var B = obb(st.b.x, st.b.y, 70 * S * kb, 42 * S * kb, st.b.yaw);
-      var res = test(A, B);
-      var ba = aabb(A), bb = aabb(B);
-      var hit = !(ba.x1 < bb.x0 || bb.x1 < ba.x0 || ba.y1 < bb.y0 || bb.y1 < ba.y0);
-
-      // 포인터 십자선
-      if (st.ptr && st.mode === 'user') {
-        g.strokeStyle = alpha(C.fg, 0.07); g.lineWidth = 1; g.setLineDash([]);
-        line(0, st.ptr[1] + 0.5, W, st.ptr[1] + 0.5); line(st.ptr[0] + 0.5, 0, st.ptr[0] + 0.5, H);
-      }
-
-      // AABB (점선)
-      g.lineWidth = 1; g.setLineDash([4, 4]);
-      [ba, bb].forEach(function (b) { g.strokeStyle = alpha(hit ? C.bad : C.muted, hit ? 0.55 : 0.4); g.strokeRect(b.x0 + 0.5, b.y0 + 0.5, b.x1 - b.x0, b.y1 - b.y0); });
-      if (hit) {
-        var ix0 = Math.max(ba.x0, bb.x0), ix1 = Math.min(ba.x1, bb.x1), iy0 = Math.max(ba.y0, bb.y0), iy1 = Math.min(ba.y1, bb.y1);
-        g.fillStyle = alpha(C.bad, res.sep ? 0.08 : 0.14);
-        g.fillRect(ix0, iy0, ix1 - ix0, iy1 - iy0);
-        // 빗금
-        g.save(); g.beginPath(); g.rect(ix0, iy0, ix1 - ix0, iy1 - iy0); g.clip();
-        g.strokeStyle = alpha(C.bad, 0.22); g.setLineDash([]);
-        for (var hx = ix0 - (iy1 - iy0); hx < ix1; hx += 7) line(hx, iy1, hx + (iy1 - iy0), iy0);
-        g.restore();
-      }
-
-      // 분리축과 투영 구간
-      var r = res.r;
-      if (r) {
-        var d = r.ax, n = [-d[1], d[0]];
-        if (n[1] > 0) n = [-n[0], -n[1]]; // 투영 축은 항상 시설 위쪽에 그립니다
-        var all = A.pts.concat(B.pts), kmax = -Infinity;
-        all.forEach(function (p) { var v = p[0] * n[0] + p[1] * n[1]; if (v > kmax) kmax = v; });
-        var off = kmax + 46 * S;
-        var Q = function (t, o) { o = o || 0; return [n[0] * (off + o) + d[0] * t, n[1] * (off + o) + d[1] * t]; };
-        var col = res.sep ? C.ok : C.bad;
-        var lo = Math.min(r.pa.mn, r.pb.mn) - 2400, hi = Math.max(r.pa.mx, r.pb.mx) + 2400;
-        var p0 = Q(lo), p1 = Q(hi);
-        g.setLineDash([6, 6]); g.lineWidth = 1; g.strokeStyle = alpha(col, 0.38);
-        line(p0[0], p0[1], p1[0], p1[1]);
-        // 꼭짓점 → 축 투영선
-        g.setLineDash([2, 4]); g.strokeStyle = alpha(C.fg, 0.18);
-        [r.pa.pmn, r.pa.pmx, r.pb.pmn, r.pb.pmx].forEach(function (p) {
-          var tt = p[0] * d[0] + p[1] * d[1], q = Q(tt); line(p[0], p[1], q[0], q[1]);
-        });
-        g.setLineDash([]); g.lineCap = 'round';
-        g.lineWidth = 3;
-        var a0 = Q(r.pa.mn, -5), a1 = Q(r.pa.mx, -5); g.strokeStyle = alpha(C.sel, 0.95); line(a0[0], a0[1], a1[0], a1[1]);
-        var b0 = Q(r.pb.mn, 5), b1 = Q(r.pb.mx, 5); g.strokeStyle = alpha(C.fg, 0.9); line(b0[0], b0[1], b1[0], b1[1]);
-        // 틈 / 겹침 구간
-        var s0 = Math.min(r.pa.mx, r.pb.mx), s1 = Math.max(r.pa.mn, r.pb.mn);
-        var g0 = Q(Math.min(s0, s1)), g1 = Q(Math.max(s0, s1));
-        g.lineWidth = 9; g.strokeStyle = alpha(col, 0.28); line(g0[0], g0[1], g1[0], g1[1]);
-        g.lineCap = 'butt';
-        var mid = Q((s0 + s1) / 2, 24);
-        var txt = res.sep ? 'GAP ' + r.gap.toFixed(1) : 'PEN ' + r.ov.toFixed(1);
-        g.font = '600 10.5px JBMono, ui-monospace, monospace';
-        var tw = g.measureText(txt).width + 10;
-        g.fillStyle = 'rgba(11,14,18,.82)'; g.fillRect(mid[0] - tw / 2, mid[1] - 8, tw, 16);
-        g.strokeStyle = alpha(col, 0.5); g.lineWidth = 1; g.strokeRect(mid[0] - tw / 2 + 0.5, mid[1] - 7.5, tw - 1, 15);
-        g.fillStyle = alpha(col, 0.95); g.textAlign = 'center'; g.textBaseline = 'middle';
-        g.fillText(txt, mid[0], mid[1] + 0.5);
-        var lab = Q(Math.max(r.pa.mx, r.pb.mx) + 60 * S, 0);
-        if (lab[0] > 16 && lab[0] < W - 140 && lab[1] > 70) {
-          g.fillStyle = alpha(col, 0.6); g.textAlign = 'left';
-          g.fillText(res.sep ? 'SEPARATING AXIS' : 'MIN OVERLAP AXIS', lab[0] + 6, lab[1] - 10);
-        }
-      }
-
-      // 시설 A (선택된 액터처럼 주황 외곽선)
-      poly(A.pts); g.fillStyle = alpha(C.sel, 0.09); g.fill();
-      g.lineWidth = 1.6; g.strokeStyle = alpha(C.sel, 0.95); g.stroke();
-      // 시설 B
-      poly(B.pts); g.fillStyle = alpha(res.sep ? C.fg : C.bad, res.sep ? 0.05 : 0.12); g.fill();
-      g.strokeStyle = alpha(res.sep ? C.fg : C.bad, 0.92); g.stroke();
-      // 로컬 축 기즈모 (X 빨강 / Y 초록)
-      [A, B].forEach(function (b) {
-        var L = 26 * S * kb;
-        g.lineWidth = 1.6;
-        g.strokeStyle = C.x; line(b.x, b.y, b.x + b.ux[0] * L, b.y + b.ux[1] * L);
-        g.strokeStyle = C.y; line(b.x, b.y, b.x + b.uy[0] * L, b.y + b.uy[1] * L);
-        g.fillStyle = C.fg; g.beginPath(); g.arc(b.x, b.y, 2.2, 0, Math.PI * 2); g.fill();
-      });
-      g.font = '600 10.5px JBMono, ui-monospace, monospace'; g.textAlign = 'left'; g.textBaseline = 'alphabetic';
-      g.fillStyle = alpha(C.sel, 0.95); g.fillText('FACILITY_A', ba.x0, ba.y0 - 8);
-      g.fillStyle = alpha(res.sep ? C.fg : C.bad, 0.8); g.fillText('FACILITY_B', bb.x0, bb.y0 - 8);
-      g.globalAlpha = 1;
-
-      // HUD (초당 약 12번만 갱신)
-      var now = performance.now();
-      if (now - hudT > 80 || !running) {
-        hudT = now;
-        var px = st.ptr ? st.ptr[0] : st.b.x, py = st.ptr ? st.ptr[1] : st.b.y;
-        if (el.hx) el.hx.textContent = fmtInt(Math.round((px - cx) / S * 10));
-        if (el.hy) el.hy.textContent = fmtInt(Math.round((py - cy) / S * 10));
-        if (el.ya) el.ya.textContent = fmtInt(centi(st.a.yaw));
-        if (el.yb) el.yb.textContent = fmtInt(centi(st.b.yaw));
-        setChip(el.aabb, hit ? 'HIT' : 'CLEAR', hit ? 'bad' : 'ok');
-        setChip(el.sat, res.sep ? 'CLEAR' : 'HIT', res.sep ? 'ok' : 'bad');
-        if (el.fp) el.fp.classList.toggle('on', hit && res.sep);
-      }
-    }
+    function centi(rad) { var d = ((rad * 180 / Math.PI) % 360 + 360) % 360; if (d >= 180) d -= 360; return Math.round(d * 100); }
+    function fmtInt(n) { return (n < 0 ? '−' : '') + Math.abs(n).toLocaleString('en-US'); }
+    function font(px0, w) { g.font = (w || 600) + ' ' + px(px0) + 'px JBMono, ui-monospace, monospace'; }
     function setChip(c, txt, tone) {
       if (!c) return;
       var b = c.querySelector('b');
       if (b.textContent !== txt) b.textContent = txt;
       c.classList.toggle('ok', tone === 'ok'); c.classList.toggle('bad', tone === 'bad');
     }
-    function loop(ts) {
-      if (!running) return;
-      var dt = Math.min(0.05, (ts - (last || ts)) / 1000); last = ts;
-      step(dt); draw();
-      raf = requestAnimationFrame(loop);
-    }
-    function start() { if (running || destroyed || !MOTION) return; running = true; last = 0; raf = requestAnimationFrame(loop); }
-    function stop() { running = false; cancelAnimationFrame(raf); }
-    function local(e) { var r = hero.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; }
+    function setText(n, v) { if (n && n.textContent !== v) n.textContent = v; }
 
-    var ro = window.ResizeObserver ? new ResizeObserver(function () { size(); }) : null;
-    if (ro) ro.observe(hero); else on(window, 'resize', size);
-    var vio = new IntersectionObserver(function (es) { visible = es[0].isIntersecting; if (visible && !document.hidden) start(); else stop(); });
-    vio.observe(hero);
-    function onVis() { if (document.hidden) stop(); else if (visible) start(); }
-    document.addEventListener('visibilitychange', onVis);
+    function draw() {
+      if (!W) return;
+      g.setTransform(DPR * S, 0, 0, DPR * S, 0, DPR * S * OY);
+      g.clearRect(0, -OY, LW, LH + OY * 2);
+      var k = st.boot, kb = easeOutBack(Math.min(1, k * 1.1));
+      g.globalAlpha = Math.min(1, k * 1.4);
+      var A = obb(st.a.x, st.a.y, 84 * kb, 48 * kb, st.a.yaw);
+      var B = obb(st.b.x, st.b.y, 58 * kb, 34 * kb, st.b.yaw);
+      var res = test(A, B), ba = aabb(A), bb = aabb(B);
+      var hit = !(ba.x1 < bb.x0 || bb.x1 < ba.x0 || ba.y1 < bb.y0 || bb.y1 < ba.y0);
 
-    if (interactive) {
-      on(hero, 'pointermove', function (e) {
-        if (e.target.closest('a, button')) { st.ptr = null; return; }
-        var p = local(e);
-        st.ptr = p; st.target = p; st.idle = 0;
-        if (st.mode !== 'user') { st.mode = 'user'; st.spinGoal = nearestTurn(st.b.yaw, Math.PI / 4); st.spinB = st.b.yaw; }
-        if (!running) { st.b.x = p[0]; st.b.y = p[1]; st.b.yaw = st.spinGoal; st.a.yaw = Math.PI / 4; draw(); }
-      }, { passive: true });
-      on(hero, 'pointerleave', function () { st.ptr = null; if (!running) draw(); });
-      on(hero, 'pointerdown', function (e) {
-        if (e.target.closest('a, button')) return;
-        var p = local(e);
-        st.mode = 'user'; st.target = p; st.idle = 0;
-        if (e.pointerType === 'mouse') st.spinGoal = st.spinGoal + Math.PI / 4;
-        if (!running) { st.b.x = p[0]; st.b.y = p[1]; st.spinB = st.b.yaw = st.spinGoal; draw(); }
+      // AABB(점선)과 겹친 영역
+      g.lineWidth = px(1); g.setLineDash([px(4), px(4)]);
+      [ba, bb].forEach(function (b) { g.strokeStyle = alpha(hit ? C.bad : C.muted, hit ? 0.6 : 0.45); g.strokeRect(b.x0, b.y0, b.x1 - b.x0, b.y1 - b.y0); });
+      if (hit) {
+        var ix0 = Math.max(ba.x0, bb.x0), ix1 = Math.min(ba.x1, bb.x1), iy0 = Math.max(ba.y0, bb.y0), iy1 = Math.min(ba.y1, bb.y1);
+        g.fillStyle = alpha(C.bad, res.sep ? 0.08 : 0.14); g.fillRect(ix0, iy0, ix1 - ix0, iy1 - iy0);
+        g.save(); g.beginPath(); g.rect(ix0, iy0, ix1 - ix0, iy1 - iy0); g.clip();
+        g.strokeStyle = alpha(C.bad, 0.22); g.setLineDash([]);
+        for (var hx = ix0 - (iy1 - iy0); hx < ix1; hx += 7) line(hx, iy1, hx + (iy1 - iy0), iy0);
+        g.restore();
+      }
+
+      // 분리축(또는 가장 적게 겹친 축)과 두 시설의 투영 구간
+      var r = res.r;
+      if (r) {
+        var d = r.ax, n = [-d[1], d[0]];
+        if (n[1] > 0) n = [-n[0], -n[1]];
+        var kmax = -Infinity;
+        A.pts.concat(B.pts).forEach(function (p) { var v = p[0] * n[0] + p[1] * n[1]; if (v > kmax) kmax = v; });
+        var off = kmax + 30;
+        var Q = function (t, o) { o = o || 0; return [n[0] * (off + o) + d[0] * t, n[1] * (off + o) + d[1] * t]; };
+        var col = res.sep ? C.ok : C.bad;
+        var p0 = Q(Math.min(r.pa.mn, r.pb.mn) - 1200), p1 = Q(Math.max(r.pa.mx, r.pb.mx) + 1200);
+        g.setLineDash([px(6), px(6)]); g.lineWidth = px(1); g.strokeStyle = alpha(col, 0.45);
+        line(p0[0], p0[1], p1[0], p1[1]);
+        g.setLineDash([px(2), px(4)]); g.strokeStyle = alpha(C.fg, 0.2);
+        [r.pa.pmn, r.pa.pmx, r.pb.pmn, r.pb.pmx].forEach(function (p) { var q = Q(p[0] * d[0] + p[1] * d[1]); line(p[0], p[1], q[0], q[1]); });
+        g.setLineDash([]); g.lineCap = 'round'; g.lineWidth = px(3);
+        var a0 = Q(r.pa.mn, -4), a1 = Q(r.pa.mx, -4); g.strokeStyle = alpha(C.sel, 0.95); line(a0[0], a0[1], a1[0], a1[1]);
+        var b0 = Q(r.pb.mn, 4), b1 = Q(r.pb.mx, 4); g.strokeStyle = alpha(C.fg, 0.9); line(b0[0], b0[1], b1[0], b1[1]);
+        var s0 = Math.min(r.pa.mx, r.pb.mx), s1 = Math.max(r.pa.mn, r.pb.mn);
+        var g0 = Q(Math.min(s0, s1)), g1 = Q(Math.max(s0, s1));
+        g.lineWidth = px(9); g.strokeStyle = alpha(col, 0.3); line(g0[0], g0[1], g1[0], g1[1]);
+        g.lineCap = 'butt';
+        var mid = Q((s0 + s1) / 2, 24);
+        var txt = res.sep ? 'GAP ' + r.gap.toFixed(1) : 'PEN ' + r.ov.toFixed(1);
+        font(10.5);
+        var tw = g.measureText(txt).width + px(10), th = px(16);
+        g.fillStyle = 'rgba(11,14,18,.85)'; g.fillRect(mid[0] - tw / 2, mid[1] - th / 2, tw, th);
+        g.strokeStyle = alpha(col, 0.55); g.lineWidth = px(1); g.strokeRect(mid[0] - tw / 2, mid[1] - th / 2, tw, th);
+        g.fillStyle = alpha(col, 0.95); g.textAlign = 'center'; g.textBaseline = 'middle';
+        g.fillText(txt, mid[0], mid[1] + px(0.5));
+        g.textAlign = 'left'; g.textBaseline = 'alphabetic';
+      }
+
+      // 시설 A(선택된 액터처럼 주황) · 시설 B
+      poly(A.pts); g.fillStyle = alpha(C.sel, 0.1); g.fill();
+      g.lineWidth = px(1.6); g.strokeStyle = alpha(C.sel, 0.95); g.stroke();
+      poly(B.pts); g.fillStyle = alpha(res.sep ? C.fg : C.bad, res.sep ? 0.06 : 0.14); g.fill();
+      g.strokeStyle = alpha(res.sep ? C.fg : C.bad, 0.92); g.stroke();
+      // 로컬 축 기즈모 (X 빨강 / Y 초록)
+      [A, B].forEach(function (b) {
+        var L = 22 * kb;
+        g.lineWidth = px(1.6);
+        g.strokeStyle = C.x; line(b.x, b.y, b.x + b.ux[0] * L, b.y + b.ux[1] * L);
+        g.strokeStyle = C.y; line(b.x, b.y, b.x + b.uy[0] * L, b.y + b.uy[1] * L);
+        g.fillStyle = C.fg; g.beginPath(); g.arc(b.x, b.y, px(2.2), 0, Math.PI * 2); g.fill();
       });
+      font(10.5);
+      g.fillStyle = alpha(C.sel, 0.95); g.fillText('FACILITY_A', ba.x0, ba.y0 - px(7));
+      g.fillStyle = alpha(res.sep ? C.fg : C.bad, 0.85); g.fillText('FACILITY_B', bb.x0, bb.y1 + px(15));
+      g.globalAlpha = 1;
+
+      setText(el.ya, fmtInt(centi(st.a.yaw)));
+      setText(el.yb, fmtInt(centi(st.b.yaw)));
+      setChip(el.aabb, hit ? 'HIT' : 'CLEAR', hit ? 'bad' : 'ok');
+      setChip(el.sat, res.sep ? 'CLEAR' : 'HIT', res.sep ? 'ok' : 'bad');
+      if (el.fp) el.fp.classList.toggle('on', hit && res.sep);
     }
+
+    // 목표 위치·각도로 부드럽게 따라가고, 다 도착하면 그리기를 멈춥니다
+    function step(dt) {
+      var b = st.b, t = st.tb, kp = Math.min(1, dt * 12), kr = Math.min(1, dt * 10);
+      b.x += (t.x - b.x) * kp; b.y += (t.y - b.y) * kp; b.yaw += (t.yaw - b.yaw) * kr;
+      var moving = Math.abs(t.x - b.x) > 0.05 || Math.abs(t.y - b.y) > 0.05 || Math.abs(t.yaw - b.yaw) > 1e-4;
+      if (!moving) { b.x = t.x; b.y = t.y; b.yaw = t.yaw; }
+      return moving;
+    }
+    function loop(ts) {
+      if (destroyed) return;
+      var dt = Math.min(0.05, (ts - (last || ts)) / 1000); last = ts;
+      var moving = mqReduce.matches ? (st.b.x = st.tb.x, st.b.y = st.tb.y, st.b.yaw = st.tb.yaw, false) : step(dt);
+      draw();
+      if (moving) raf = requestAnimationFrame(loop); else running = false;
+    }
+    function kick() { if (running || destroyed) return; running = true; last = 0; raf = requestAnimationFrame(loop); }
+    function local(e) { var r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / S, (e.clientY - r.top) / S - OY]; }
+    function moveTo(x, y) { st.tb.x = Math.max(56, Math.min(LW - 56, x)); st.tb.y = Math.max(52 - OY, Math.min(LH - 70 + OY, y)); kick(); }
+    function rotate() { st.tb.yaw += Q45; kick(); }
+    function reset() { st.tb.x = HOME.x; st.tb.y = HOME.y; st.tb.yaw = Q45 + Math.round((st.b.yaw - Q45) / Math.PI) * Math.PI; kick(); }
+
+    if (!PREVIEW) {
+      on(cv, 'pointermove', function (e) { if (e.pointerType === 'mouse') { var p = local(e); moveTo(p[0], p[1]); } });
+      on(cv, 'pointerdown', function (e) {
+        var p = local(e);
+        if (e.pointerType === 'mouse') rotate(); else moveTo(p[0], p[1]);
+      });
+      on(cv, 'keydown', function (e) {
+        var k = e.key, step = e.shiftKey ? 30 : 10;
+        if (k === 'ArrowLeft') moveTo(st.tb.x - step, st.tb.y);
+        else if (k === 'ArrowRight') moveTo(st.tb.x + step, st.tb.y);
+        else if (k === 'ArrowUp') moveTo(st.tb.x, st.tb.y - step);
+        else if (k === 'ArrowDown') moveTo(st.tb.x, st.tb.y + step);
+        else if (k === 'r' || k === 'R' || k === 'Enter' || k === ' ') rotate();
+        else return;
+        e.preventDefault();
+      });
+      var br = box.querySelector('[data-sat-rot]'), bs = box.querySelector('[data-sat-reset]');
+      if (br) on(br, 'click', rotate);
+      if (bs) on(bs, 'click', reset);
+    }
+    var ro = window.ResizeObserver ? new ResizeObserver(size) : null;
+    if (ro) ro.observe(stage); else on(window, 'resize', size);
     size();
     return {
       boot: function () {
-        if (!MOTION) { st.boot = 1; draw(); return; }
-        G.to(st, { boot: 1, duration: 1.6, ease: 'power3.out', delay: 0.25, onUpdate: function () { if (!running) draw(); } });
+        if (!MOTION) return;
+        st.boot = 0;
+        G.to(st, { boot: 1, duration: 1.4, ease: 'power3.out', delay: 0.2, onUpdate: draw });
       },
-      destroy: function () {
-        destroyed = true; stop();
-        if (ro) ro.disconnect();
-        vio.disconnect();
-        document.removeEventListener('visibilitychange', onVis);
-      }
+      destroy: function () { destroyed = true; cancelAnimationFrame(raf); if (ro) ro.disconnect(); }
     };
   }
 
@@ -902,12 +836,6 @@
         if (DS) tl.from(svg.querySelectorAll('line.ar, path.ar, polyline.ar'), { drawSVG: '0%', duration: 0.7, stagger: 0.04, ease: 'power2.out', clearProps: 'strokeDasharray,strokeDashoffset' }, 0.7);
         tl.from(svg.querySelectorAll('.ar-t, .lg-s, .lg-w, .lg-t'), { autoAlpha: 0, duration: 0.5, stagger: 0.03 }, 0.9)
           .add(function () { svg.classList.add('live'); });
-      } else if (id === 'sat') {
-        tl.from(svg.querySelectorAll('.sv-aabb, .sv-ghost'), { autoAlpha: 0, duration: 0.5, stagger: 0.08 }, 0.2)
-          .fromTo(svg.querySelectorAll('.sv-hit'), { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.22, repeat: 2, yoyo: true, ease: 'none' }, 0.6)
-          .from(svg.querySelectorAll('.sv-obb, .sv-obb2'), { autoAlpha: 0, scale: 0.6, rotation: -45, transformOrigin: '50% 50%', duration: 0.9, stagger: 0.1, ease: 'back.out(1.6)' }, 0.5);
-        if (DS) tl.from(svg.querySelectorAll('.sv-axis'), { drawSVG: '0%', duration: 0.9, ease: 'power2.inOut', clearProps: 'strokeDasharray,strokeDashoffset' }, 0.9);
-        tl.from(svg.querySelectorAll('text'), { autoAlpha: 0, duration: 0.5, stagger: 0.05 }, 0.4);
       } else if (id === 'zone') {
         tl.from(svg.querySelectorAll('.sv-slab, .sv-nav'), { autoAlpha: 0, duration: 0.6, stagger: 0.08 }, 0.15)
           .from(svg.querySelectorAll('.sv-dot'), { autoAlpha: 0, scale: 0, transformOrigin: '50% 50%', duration: 0.4, stagger: { amount: 0.6, from: 'start' } }, 0.4)
@@ -943,6 +871,11 @@
       tl.from(el.querySelector('.se-core'), { autoAlpha: 0, scale: 0.94, duration: 0.6, ease: 'back.out(1.8)', clearProps: 'transform' }, 0.85);
       return tl;
     },
+    satx: function (el) {
+      var tl = REVEAL.up(el);
+      if (el.__demo) el.__demo.boot();
+      return tl;
+    },
     pipe: function (el) {
       var tl = G.timeline();
       tl.fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3 })
@@ -959,7 +892,7 @@
       var tl = G.timeline({ defaults: { ease: EASE } });
       if (hero) {
         var title = hero.querySelector('.hero-title span');
-        G.set(hero.querySelectorAll('.hero-title, .hero-role, .hero-meta, .hero-index, .hud, .hero-hint, .scroll-cue'), { autoAlpha: 1 });
+        G.set(hero.querySelectorAll('.hero-title, .hero-role, .hero-meta, .hero-index, .scroll-cue'), { autoAlpha: 1 });
         if (SPLIT_OK && title) {
           var sp = new SplitText(title, { type: 'chars', mask: 'chars' });
           tl.from(sp.chars, { yPercent: 108, duration: 1.3, stagger: 0.045 }, 0.1);
@@ -970,17 +903,15 @@
         tl
           .from(hero.querySelectorAll('.hero-meta > *'), { y: 18, autoAlpha: 0, duration: 0.9, stagger: 0.08, clearProps: 'transform' }, 0.55)
           .from(hero.querySelectorAll('.hero-index li'), { y: 24, autoAlpha: 0, duration: 0.9, stagger: 0.09, clearProps: 'transform' }, 0.65)
-          .from(hero.querySelectorAll('.hud, .hero-hint, .scroll-cue'), { autoAlpha: 0, duration: 0.8, stagger: 0.06 }, 0.9);
+          .from(hero.querySelectorAll('.scroll-cue'), { autoAlpha: 0, duration: 0.8 }, 0.9);
       }
-      // 첫 화면이 스크롤에 따라 살짝 물러남(데모는 느리게 밀리며 흐려지고, 글은 조금 늦게 따라옴)
+      // 첫 화면이 스크롤에 따라 살짝 물러남(격자는 느리게, 글은 조금 늦게 따라옴)
       if (hero) {
-        var stHero = { trigger: hero, start: 'top top', end: 'bottom top', scrub: true };
-        G.to(hero.querySelector('canvas.sat'), { yPercent: 18, opacity: 0.2, ease: 'none', scrollTrigger: stHero });
+        G.to(hero.querySelector('.hero-grid'), { yPercent: 12, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
         G.to(hero.querySelector('.hero-inner'), { y: 48, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
       }
       var tb = app.querySelector('.topbar');
       tl.from(tb, { yPercent: -100, autoAlpha: 0, duration: 0.9, clearProps: 'transform' }, 0.2);
-      if (sat) sat.boot();
       root.classList.remove('mp');
 
       /* --- 화면에 들어올 때 한 번만 등장 --- */
